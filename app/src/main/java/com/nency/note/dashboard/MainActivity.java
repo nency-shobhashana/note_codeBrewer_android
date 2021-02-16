@@ -7,11 +7,13 @@ import com.google.android.material.snackbar.Snackbar;
 import com.nency.note.R;
 import com.nency.note.model.Category;
 import com.nency.note.model.Note;
+import com.nency.note.repository.Database;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.View;
 
@@ -24,6 +26,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
 
+    private static final int NUM_COLUMNS = 2;
     RecyclerView recyclerView;
     RecyclerView.Adapter myAdapter;
     RecyclerView.LayoutManager layoutManager;
@@ -41,20 +44,13 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        notes = new ArrayList<Note>();
-        notes.add(new Note("Sample Title 1","Sample description 1","2nd June, 2020","2nd June 2020",null, null, "Canada", new Category(1,"Personal", 2)));
-        notes.add(new Note("Sample Title 2","Sample description 2","12nd July, 2020","12nd July 2020",null, null, "Canada", new Category(2,"Shopping", 3)));
-        notes.add(new Note("Sample Title 3","Sample description 3","25nd Aug, 2020","25nd Aug 2020",null, null, "Canada", new Category(3,"Shopping", 3)));
-        notes.add(new Note("Sample Title 4","Sample description 4","20nd Jan, 2020","20nd Jan 2020",null, null, "Canada", new Category(4,"Personal", 2)));
-        notes.add(new Note("Sample Title 5","Sample description 5","2nd June, 2020","2nd June 2020",null, null, "Canada", new Category(1,"Personal", 2)));
-        notes.add(new Note("Sample Title 6","Sample description 6","12nd July, 2020","12nd July 2020",null, null, "Canada", new Category(2,"Shopping", 3)));
-        notes.add(new Note("Sample Title 7","Sample description 7","25nd Aug, 2020","25nd Aug 2020",null, null, "Canada", new Category(3,"Shopping", 3)));
-        notes.add(new Note("Sample Title 8","Sample description 8","20nd Jan, 2020","20nd Jan 2020",null, null, "Canada", new Category(4,"Personal", 2)));
+        Database.initDatabase();
+        notes = Database.getNotes();
 
         myAdapter = new NoteAdapter(this, notes);
 
         recyclerView.setAdapter(myAdapter);
-
+        initRecyclerView();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    private void initRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.list);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(NUM_COLUMNS, LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        recyclerView.setAdapter(myAdapter);
     }
 
     @Override

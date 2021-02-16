@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.nency.note.R;
 import com.nency.note.model.Note;
@@ -19,6 +20,7 @@ import java.util.List;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
     private List<Note> notes = null;
+
 
     public NoteAdapter (Context context, List<Note> list) {
         notes = list;
@@ -53,7 +55,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         holder.title.setText(notes.get(position).getTitle());
         holder.description.setText(notes.get(position).getDescription());
         holder.category.setText(notes.get(position).getCategory().getName());
-//        holder.image.setImageResource(notes.get(position).getImages());
+        holder.image.setImageResource(R.drawable.nature);
     }
 
     @Override
