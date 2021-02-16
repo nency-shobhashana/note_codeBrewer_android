@@ -52,7 +52,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         holder.itemView.setTag(notes.get(position));
         holder.title.setText(notes.get(position).getTitle());
         holder.description.setText(notes.get(position).getDescription());
-//        holder.category.setText(notes.get(position).getCategory());
+        holder.category.setText(notes.get(position).getCategory().getName());
 //        holder.image.setImageResource(notes.get(position).getImages());
     }
 
