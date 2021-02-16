@@ -2,10 +2,10 @@ package com.nency.note.model;
 
 public class Category {
     private int id;
-    private int name;
+    private String name;
     private int noOfNotes;
 
-    public Category(int id, int name, int noOfNotes) {
+    public Category(int id, String name, int noOfNotes) {
         this.id = id;
         this.name = name;
         this.noOfNotes = noOfNotes;
@@ -19,11 +19,11 @@ public class Category {
         this.id = id;
     }
 
-    public int getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(int name) {
+    public void setName(String name) {
         this.name = name;
     }
 
