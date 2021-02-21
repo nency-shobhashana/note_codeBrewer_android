@@ -13,7 +13,7 @@ public class Database {
         categories.add(new Category(1,"Personal", 4));
         categories.add(new Category(2,"Shopping", 4));
 
-        notes.add(new Note("Sample Title 1","Sample description 1","2nd June, 2020","2nd June 2020",null, null, "Canada", categories.get(0)));
+        notes.add(new Note("Sample Title 1","Sample description 1, Sample description 1, Sample description 1, Sample description 1, Sample description 1, Sample description 1, Sample description 1","2nd June, 2020","2nd June 2020",null, null, "Canada", categories.get(0)));
         notes.add(new Note("Sample Title 2","Sample description 2","12nd July, 2020","12nd July 2020",null, null, "Canada", categories.get(1)));
         notes.add(new Note("Sample Title 3","Sample description 3","25nd Aug, 2020","25nd Aug 2020",null, null, "Canada", categories.get(1)));
         notes.add(new Note("Sample Title 4","Sample description 4","20nd Jan, 2020","20nd Jan 2020",null, null, "Canada", categories.get(0)));
