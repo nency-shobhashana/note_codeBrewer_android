@@ -71,7 +71,7 @@ public class NoteActivity extends AppCompatActivity {
     }
 
     private void updateNote() {
-        
+
     }
 
     private void addNote() {
