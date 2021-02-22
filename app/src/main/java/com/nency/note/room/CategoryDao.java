@@ -1,10 +1,12 @@
 package com.nency.note.room;
 
+import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
 import java.util.List;
 
+@Dao
 public interface CategoryDao {
     @Insert
     void insertCategory(Category category);
@@ -19,5 +21,5 @@ public interface CategoryDao {
     void updateCategory(String name, String noOfNotes);
 
     @Query("SELECT * FROM category ORDER BY name")
-    List<Note> getAllCategories();
+    List<Category> getAllCategories();
 }

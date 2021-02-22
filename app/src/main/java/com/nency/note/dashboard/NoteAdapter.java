@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.nency.note.R;
-import com.nency.note.model.Note;
+import com.nency.note.room.Note;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         holder.itemView.setTag(notes.get(position));
         holder.title.setText(notes.get(position).getTitle());
         holder.description.setText(notes.get(position).getDescription());
-        holder.category.setText(notes.get(position).getCategory().getName());
+//        holder.category.setText(notes.get(position).getCategory().getName());
         holder.image.setImageResource(R.drawable.nature);
     }
 

@@ -1,5 +1,8 @@
 package com.nency.note.room;
 
+import android.widget.EditText;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -24,25 +27,24 @@ public class Note {
     @ColumnInfo(name = "date")
     private String date;
 
-    @NonNull
-    @ColumnInfo(name = "modifiedDate")
-    private String modifiedDate;
+//    @NonNull
+//    @ColumnInfo(name = "modifiedDate")
+//    private String modifiedDate;
 
 //    private List<String> images;
 //    private List<String> records;
 
-    @NonNull
+//    @NonNull
     @ColumnInfo(name = "placeAddress")
     private String placeAddress;
 //    private Category category;
 
 
-    public Note(int id, @NonNull String title, @NonNull String description, @NonNull String date, @NonNull String modifiedDate, @NonNull String placeAddress) {
-        this.id = id;
+    public Note(@NonNull String title, @NonNull String description, @NonNull String date, String placeAddress) {
         this.title = title;
         this.description = description;
         this.date = date;
-        this.modifiedDate = modifiedDate;
+//        this.modifiedDate = modifiedDate;
         this.placeAddress = placeAddress;
     }
 
@@ -81,16 +83,16 @@ public class Note {
         this.date = date;
     }
 
-    @NonNull
-    public String getModifiedDate() {
-        return modifiedDate;
-    }
+//    @NonNull
+//    public String getModifiedDate() {
+//        return modifiedDate;
+//    }
+//
+//    public void setModifiedDate(@NonNull String modifiedDate) {
+//        this.modifiedDate = modifiedDate;
+//    }
 
-    public void setModifiedDate(@NonNull String modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-
-    @NonNull
+//    @NonNull
     public String getPlaceAddress() {
         return placeAddress;
     }

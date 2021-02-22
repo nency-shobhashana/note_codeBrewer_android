@@ -1,13 +1,13 @@
 package com.nency.note.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.nency.note.R;
-import com.nency.note.model.Category;
-import com.nency.note.model.Note;
-import com.nency.note.repository.Database;
+import com.nency.note.detail.NoteActivity;
+import com.nency.note.room.Note;
+import com.nency.note.room.NoteRoomDatabase;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,11 +27,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static final int NUM_COLUMNS = 2;
+
     RecyclerView recyclerView;
     RecyclerView.Adapter myAdapter;
     RecyclerView.LayoutManager layoutManager;
 
-    List<Note> notes;
+    ArrayList<Note> notes = new ArrayList();
+    private NoteRoomDatabase noteRoomDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,25 +46,36 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        Database.initDatabase();
-        notes = Database.getNotes();
+//        Database.initDatabase();
+//        notes = Database.getNotes();
 
+        // set adapter
         myAdapter = new NoteAdapter(this, notes);
-
-        recyclerView.setAdapter(myAdapter);
         initRecyclerView();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fabNewNote);
-        fab.setOnClickListener(new View.OnClickListener() {
+        // add new note button
+        FloatingActionButton addNew = findViewById(R.id.addNew);
+        addNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(getApplicationContext(), NoteActivity.class);
+                startActivity(i);
             }
         });
+
+        // Room db
+        noteRoomDatabase = noteRoomDatabase.getInstance(this);
+        loadNotes();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadNotes();
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     private void initRecyclerView() {
@@ -92,5 +105,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void loadNotes() {
+        notes.clear();
+        notes.addAll(noteRoomDatabase.NoteDoa().getAllNotes());
     }
 }

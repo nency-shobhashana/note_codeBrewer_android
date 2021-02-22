@@ -19,4 +19,35 @@ public class Category {
     @ColumnInfo(name = "noOfNotes")
     private int noOfNotes;
 
+    public Category(int id, @NonNull String name, @NonNull int noOfNotes) {
+        this.id = id;
+        this.name = name;
+        this.noOfNotes = noOfNotes;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @NonNull
+    public String getName() {
+        return name;
+    }
+
+    public void setName(@NonNull String name) {
+        this.name = name;
+    }
+
+    @NonNull
+    public int getNoOfNotes() {
+        return noOfNotes;
+    }
+
+    public void setNoOfNotes(int noOfNotes) {
+        this.noOfNotes = noOfNotes;
+    }
 }
