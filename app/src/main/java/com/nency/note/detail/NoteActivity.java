@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +20,9 @@ import com.nency.note.dashboard.MainActivity;
 import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -30,6 +33,7 @@ public class NoteActivity extends AppCompatActivity {
     TextView category, date, location;
     ImageView iconImage, iconAudio;
     Button saveNote;
+    ArrayList<Uri> imageList = new ArrayList<>();
 
     private NoteRoomDatabase noteRoomDatabase;
 
@@ -53,9 +57,15 @@ public class NoteActivity extends AppCompatActivity {
         iconImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageListDialogFragment.newInstance().show(getSupportFragmentManager(), "dialog");
+                ImageListDialogFragment.newInstance(imageList).show(getSupportFragmentManager(), "dialog");
             }
         });
+
+        // getting the current time
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd hh:mm:ss", Locale.CANADA);
+        String createdDate = sdf.format(cal.getTime());
+        date.setText(createdDate);
 
         saveNote = findViewById(R.id.saveNote);
         saveNote.setOnClickListener(new View.OnClickListener() {
@@ -94,12 +104,6 @@ public class NoteActivity extends AppCompatActivity {
 
         String location = "Canada";
 
-        // getting the current time
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd hh:mm:ss", Locale.CANADA);
-        String createdDate = sdf.format(cal.getTime());
-        date.setText(createdDate);
-
         if (noteTitle.isEmpty()) {
             title.setError("Note title cannot be empty.");
             title.requestFocus();
@@ -111,8 +115,13 @@ public class NoteActivity extends AppCompatActivity {
             return;
         }
 
+        ArrayList<String> images = new ArrayList<>();
+        for (Uri uri : imageList) {
+            images.add(uri.toString());
+        }
+
         // Insert note into room
-        Note note = new Note(noteTitle, noteDesc, createdDate, location);
+        Note note = new Note(noteTitle, noteDesc, date.getText().toString(), location, images);
         noteRoomDatabase.NoteDoa().insertNote(note);
         Toast.makeText(this, "Note Added", Toast.LENGTH_SHORT).show();
         redirectAllNotes();

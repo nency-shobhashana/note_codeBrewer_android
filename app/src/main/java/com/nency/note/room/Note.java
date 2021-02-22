@@ -1,5 +1,6 @@
 package com.nency.note.room;
 
+import android.net.Uri;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -7,6 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+
+import java.util.List;
 
 @Entity(tableName = "note")
 public class Note {
@@ -31,7 +35,8 @@ public class Note {
 //    @ColumnInfo(name = "modifiedDate")
 //    private String modifiedDate;
 
-//    private List<String> images;
+    @ColumnInfo(name = "images")
+    private List<String> images;
 //    private List<String> records;
 
 //    @NonNull
@@ -40,12 +45,13 @@ public class Note {
 //    private Category category;
 
 
-    public Note(@NonNull String title, @NonNull String description, @NonNull String date, String placeAddress) {
+    public Note(@NonNull String title, @NonNull String description, @NonNull String date,@NonNull String placeAddress,@NonNull List<String> images) {
         this.title = title;
         this.description = description;
         this.date = date;
 //        this.modifiedDate = modifiedDate;
         this.placeAddress = placeAddress;
+        this.images = images;
     }
 
     public int getId() {
@@ -99,5 +105,13 @@ public class Note {
 
     public void setPlaceAddress(@NonNull String placeAddress) {
         this.placeAddress = placeAddress;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 }

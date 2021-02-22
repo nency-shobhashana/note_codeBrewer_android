@@ -48,13 +48,12 @@ public class ImageListDialogFragment extends BottomSheetDialogFragment
     private static final int REQUEST_IMAGE_CAPTURE = 101;
     private static final int PICK_IMAGE = 102;
     private Uri newPhotoURI = null;
-    private ArrayList<Uri> imageList = new ArrayList();
+    private ArrayList<Uri> imageList ;
 
     // TODO: Customize parameters
-    public static ImageListDialogFragment newInstance() {
+    public static ImageListDialogFragment newInstance(ArrayList<Uri> imageList) {
         final ImageListDialogFragment fragment = new ImageListDialogFragment();
-        final Bundle args = new Bundle();
-        fragment.setArguments(args);
+        fragment.imageList = imageList;
         return fragment;
     }
 
@@ -157,7 +156,7 @@ public class ImageListDialogFragment extends BottomSheetDialogFragment
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(requireContext(),
-                        "fileprovider",
+                        "com.nency.note.fileprovider",
                         photoFile);
                 newPhotoURI = photoURI;
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
