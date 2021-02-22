@@ -1,13 +1,8 @@
 package com.nency.note.detail;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,15 +10,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.nency.note.R;
-import com.nency.note.dashboard.MainActivity;
+import com.nency.note.room.Converter;
 import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class NoteActivity extends AppCompatActivity {
@@ -71,30 +68,41 @@ public class NoteActivity extends AppCompatActivity {
         saveNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(noteId < 0) {
+                if (noteId < 0) {
                     addNote();
-                }else {
+                } else {
                     updateNote();
                 }
             }
         });
-        
-        if(noteId >= 0) {
+
+        if (noteId >= 0) {
             Note note = noteRoomDatabase.NoteDoa().getNote(noteId);
             title.setText(note.getTitle());
             description.setText(note.getDescription());
             location.setText(note.getPlaceAddress());
             date.setText(note.getDate());
+            List<String> images = note.getImages();
+            for (String path : images) {
+                if (!TextUtils.isEmpty(path)) {
+                    imageList.add(Uri.parse(path));
+                }
+            }
 //            category.setText(note.getca());
         }
-        
+
     }
 
     private void updateNote() {
         String noteTitle = title.getText().toString();
         String noteDesc = description.getText().toString();
 
-        noteRoomDatabase.NoteDoa().updateNote(noteId, noteTitle, noteDesc);
+        ArrayList<String> images = new ArrayList<>();
+        for (Uri uri : imageList) {
+            images.add(uri.toString());
+        }
+
+        noteRoomDatabase.NoteDoa().updateNote(noteId, noteTitle, noteDesc, Converter.toString(images));
         redirectAllNotes();
     }
 

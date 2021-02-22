@@ -18,8 +18,8 @@ public interface NoteDao {
     @Query("DELETE FROM note WHERE id = :id")
     void deleteNote(int id);
 
-    @Query("UPDATE note SET title = :title, description = :description where id= :id")
-    void updateNote(int id, String title, String description);
+    @Query("UPDATE note SET title = :title, description = :description, images = :images where id= :id")
+    void updateNote(int id, String title, String description, String images);
 
     @Query("SELECT * FROM note ORDER BY title")
     List<Note> getAllNotes();
