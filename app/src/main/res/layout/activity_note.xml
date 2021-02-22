@@ -56,24 +56,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
-    <ImageButton
-        android:id="@+id/imageButton"
+    <ImageView
+        android:id="@+id/iconImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_report_image" />
+        app:srcCompat="@drawable/ic_image" />
 
-    <ImageButton
-        android:id="@+id/imageButton2"
+    <ImageView
+        android:id="@+id/iconAudio"
         android:layout_width="46dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        app:layout_constraintStart_toEndOf="@+id/iconImage"
         app:srcCompat="@android:drawable/presence_audio_online" />
 
     <Button
@@ -86,7 +86,7 @@
         android:text="Save"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageButton2" />
+        app:layout_constraintStart_toEndOf="@+id/iconAudio" />
 
     <TextView
         android:id="@+id/category"
@@ -107,6 +107,6 @@
         android:layout_marginBottom="16dp"
         android:text="Location"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/imageButton"
+        app:layout_constraintBottom_toTopOf="@+id/iconImage"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,6 +28,7 @@ public class NoteActivity extends AppCompatActivity {
     int noteId = -1;
     EditText title, description;
     TextView category, date, location;
+    ImageView iconImage, iconAudio;
     Button saveNote;
 
     private NoteRoomDatabase noteRoomDatabase;
@@ -46,6 +47,15 @@ public class NoteActivity extends AppCompatActivity {
         category = findViewById(R.id.category);
         date = findViewById(R.id.date);
         location = findViewById(R.id.location);
+        iconImage = findViewById(R.id.iconImage);
+        iconAudio = findViewById(R.id.iconAudio);
+
+        iconImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageListDialogFragment.newInstance().show(getSupportFragmentManager(), "dialog");
+            }
+        });
 
         saveNote = findViewById(R.id.saveNote);
         saveNote.setOnClickListener(new View.OnClickListener() {
