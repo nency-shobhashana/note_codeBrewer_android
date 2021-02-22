@@ -31,6 +31,7 @@ public class NoteActivity extends AppCompatActivity {
     ImageView iconImage, iconAudio;
     Button saveNote;
     ArrayList<Uri> imageList = new ArrayList<>();
+    ArrayList<String> recordsList = new ArrayList<>();
 
     private NoteRoomDatabase noteRoomDatabase;
 
@@ -61,7 +62,7 @@ public class NoteActivity extends AppCompatActivity {
         iconAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioRecordFragment.newInstance().show(getSupportFragmentManager(), "dialog");
+                AudioRecordFragment.newInstance(recordsList).show(getSupportFragmentManager(), "dialog");
             }
         });
 
@@ -95,6 +96,7 @@ public class NoteActivity extends AppCompatActivity {
                     imageList.add(Uri.parse(path));
                 }
             }
+            recordsList.addAll(note.getRecords());
 //            category.setText(note.getca());
         }
 
@@ -109,7 +111,7 @@ public class NoteActivity extends AppCompatActivity {
             images.add(uri.toString());
         }
 
-        noteRoomDatabase.NoteDoa().updateNote(noteId, noteTitle, noteDesc, Converter.toString(images));
+        noteRoomDatabase.NoteDoa().updateNote(noteId, noteTitle, noteDesc, Converter.toString(images), Converter.toString(recordsList));
         redirectAllNotes();
     }
 
@@ -136,7 +138,7 @@ public class NoteActivity extends AppCompatActivity {
         }
 
         // Insert note into room
-        Note note = new Note(noteTitle, noteDesc, date.getText().toString(), location, images);
+        Note note = new Note(noteTitle, noteDesc, date.getText().toString(), location, images, recordsList);
         noteRoomDatabase.NoteDoa().insertNote(note);
         Toast.makeText(this, "Note Added", Toast.LENGTH_SHORT).show();
         redirectAllNotes();

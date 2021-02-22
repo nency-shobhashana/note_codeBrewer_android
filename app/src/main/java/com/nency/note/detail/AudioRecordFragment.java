@@ -53,7 +53,7 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
     private SeekBar scrubSeekBar;
     Timer seekTimer;
 
-    private final ArrayList<String> audioList = new ArrayList<>();
+    private ArrayList<String> audioList;
     RecyclerView recyclerView;
 
     // Requesting permission to RECORD_AUDIO
@@ -63,10 +63,9 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
     private AudioRecordFragment() {
     }
 
-    public static AudioRecordFragment newInstance() {
+    public static AudioRecordFragment newInstance(ArrayList<String> audioList) {
         AudioRecordFragment fragment = new AudioRecordFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+        fragment.audioList = audioList;
         return fragment;
     }
 
@@ -221,11 +220,13 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
     }
 
     private void stopPlaying() {
-        player.release();
-        player = null;
-        scrubSeekBar.setVisibility(View.GONE);
-        playButton.stopPlaying();
-        seekTimer.cancel();
+        if(player != null) {
+            player.release();
+            player = null;
+            scrubSeekBar.setVisibility(View.GONE);
+            playButton.stopPlaying();
+            seekTimer.cancel();
+        }
     }
 
     private String createAudioFile() throws IOException {

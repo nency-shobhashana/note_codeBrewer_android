@@ -37,7 +37,9 @@ public class Note {
 
     @ColumnInfo(name = "images")
     private List<String> images;
-//    private List<String> records;
+
+    @ColumnInfo(name = "records")
+    private List<String> records;
 
 //    @NonNull
     @ColumnInfo(name = "placeAddress")
@@ -45,13 +47,14 @@ public class Note {
 //    private Category category;
 
 
-    public Note(@NonNull String title, @NonNull String description, @NonNull String date,@NonNull String placeAddress,@NonNull List<String> images) {
+    public Note(@NonNull String title, @NonNull String description, @NonNull String date,@NonNull String placeAddress, @NonNull List<String> images, @NonNull List<String> records) {
         this.title = title;
         this.description = description;
         this.date = date;
 //        this.modifiedDate = modifiedDate;
         this.placeAddress = placeAddress;
         this.images = images;
+        this.records = records;
     }
 
     public int getId() {
@@ -113,5 +116,13 @@ public class Note {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public List<String> getRecords() {
+        return records;
+    }
+
+    public void setRecords(List<String> records) {
+        this.records = records;
     }
 }
