@@ -58,6 +58,13 @@ public class NoteActivity extends AppCompatActivity {
             }
         });
 
+        iconAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AudioRecordFragment.newInstance().show(getSupportFragmentManager(), "dialog");
+            }
+        });
+
         // getting the current time
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd hh:mm:ss", Locale.CANADA);
