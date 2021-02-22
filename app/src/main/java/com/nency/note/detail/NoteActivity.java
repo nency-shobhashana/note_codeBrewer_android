@@ -71,7 +71,11 @@ public class NoteActivity extends AppCompatActivity {
     }
 
     private void updateNote() {
+        String noteTitle = title.getText().toString();
+        String noteDesc = description.getText().toString();
 
+        noteRoomDatabase.NoteDoa().updateNote(noteId, noteTitle, noteDesc);
+        redirectAllNotes();
     }
 
     private void addNote() {
@@ -105,7 +109,8 @@ public class NoteActivity extends AppCompatActivity {
     }
 
     private void redirectAllNotes() {
-        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(i);
+//        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//        startActivity(i);
+        finish();
     }
 }
