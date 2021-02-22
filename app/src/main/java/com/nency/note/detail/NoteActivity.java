@@ -25,6 +25,7 @@ import java.util.Locale;
 
 public class NoteActivity extends AppCompatActivity {
 
+    int noteId = -1;
     EditText title, description;
     TextView category, date, location;
     Button saveNote;
@@ -36,6 +37,7 @@ public class NoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
 
+        noteId = getIntent().getIntExtra("NoteId", -1);
         // Room db
         noteRoomDatabase = noteRoomDatabase.getInstance(this);
 
@@ -49,9 +51,27 @@ public class NoteActivity extends AppCompatActivity {
         saveNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addNote();
+                if(noteId < 0) {
+                    addNote();
+                }else {
+                    updateNote();
+                }
             }
         });
+        
+        if(noteId >= 0) {
+            Note note = noteRoomDatabase.NoteDoa().getNote(noteId);
+            title.setText(note.getTitle());
+            description.setText(note.getDescription());
+            location.setText(note.getPlaceAddress());
+            date.setText(note.getDate());
+//            category.setText(note.getca());
+        }
+        
+    }
+
+    private void updateNote() {
+        
     }
 
     private void addNote() {

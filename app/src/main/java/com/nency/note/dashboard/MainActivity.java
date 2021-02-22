@@ -23,7 +23,7 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnItemClickListener {
 
 
     private static final int NUM_COLUMNS = 2;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 //        notes = Database.getNotes();
 
         // set adapter
-        myAdapter = new NoteAdapter(this, notes);
+        myAdapter = new NoteAdapter(this, notes, this);
         initRecyclerView();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -110,5 +110,13 @@ public class MainActivity extends AppCompatActivity {
     public void loadNotes() {
         notes.clear();
         notes.addAll(noteRoomDatabase.NoteDoa().getAllNotes());
+    }
+
+    @Override
+    public void onItemClick(int id) {
+        Bundle data = new Bundle();
+        data.putInt("NoteId", id);
+        Intent i = new Intent(this, NoteActivity.class);
+        startActivity(i,data);
     }
 }
