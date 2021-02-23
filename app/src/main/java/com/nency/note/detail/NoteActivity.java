@@ -34,7 +34,7 @@ public class NoteActivity extends AppCompatActivity {
 
     EditText title, description;
     TextView category, date, location;
-    ImageView iconImage, iconAudio;
+    ImageView iconCategory, iconImage, iconAudio;
     Button saveNote;
 
     ArrayList<Uri> imageList = new ArrayList<>();
@@ -90,12 +90,20 @@ public class NoteActivity extends AppCompatActivity {
         category = findViewById(R.id.category);
         date = findViewById(R.id.date);
         location = findViewById(R.id.location);
+        iconCategory = findViewById(R.id.iconCategory);
         iconImage = findViewById(R.id.iconImage);
         iconAudio = findViewById(R.id.iconAudio);
         saveNote = findViewById(R.id.saveNote);
     }
 
     private void initListener() {
+        iconCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CategoryListDialogFragment.newInstance()
+                        .show(getSupportFragmentManager(), "dialog");
+            }
+        });
         iconImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,7 +111,6 @@ public class NoteActivity extends AppCompatActivity {
                         .show(getSupportFragmentManager(), "dialog");
             }
         });
-
         iconAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
