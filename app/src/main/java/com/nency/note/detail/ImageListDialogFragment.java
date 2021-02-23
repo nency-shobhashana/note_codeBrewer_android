@@ -28,7 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.nency.note.R;
-import com.nency.note.dashboard.OnItemClickListener;
+import com.nency.note.interfaces.OnItemClickListener;
 
 import java.io.File;
 import java.io.IOException;

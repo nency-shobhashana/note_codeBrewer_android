@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nency.note.interfaces.OnItemClickListener;
 import com.nency.note.R;
 import com.nency.note.detail.NoteActivity;
 import com.nency.note.room.Note;
@@ -21,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnItemClickListener {
 

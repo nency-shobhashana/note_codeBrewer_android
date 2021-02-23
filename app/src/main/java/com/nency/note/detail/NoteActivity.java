@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.nency.note.R;
+import com.nency.note.interfaces.OnCategorySelectListener;
 import com.nency.note.room.Converter;
 import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
@@ -26,7 +27,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class NoteActivity extends AppCompatActivity {
+public class NoteActivity extends AppCompatActivity implements OnCategorySelectListener {
 
     private static final int LOCATION_REQUEST = 101;
 
@@ -100,7 +101,7 @@ public class NoteActivity extends AppCompatActivity {
         iconCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CategoryListDialogFragment.newInstance()
+                CategoryListDialogFragment.newInstance(NoteActivity.this)
                         .show(getSupportFragmentManager(), "dialog");
             }
         });
@@ -162,6 +163,11 @@ public class NoteActivity extends AppCompatActivity {
         location.setText(address);
         lat = userLocation.getLatitude();
         lng = userLocation.getLongitude();
+    }
+
+    @Override
+    public void onCategorySelected(int categoryId) {
+
     }
 
     private void updateNote() {
