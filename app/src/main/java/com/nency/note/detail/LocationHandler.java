@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
@@ -37,11 +38,12 @@ public class LocationHandler {
     }
 
     // add user location update listener
-    void startUpdateLocation(Context context) {
-        if (!hasLocationPermission(context)) {
-            return;
+    Location startUpdateLocation(Context context) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return null;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 50, locationListener);
+        return  locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 
     String getAddress(Context context, double latitude, double longitude){

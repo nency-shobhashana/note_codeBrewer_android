@@ -1,5 +1,6 @@
 package com.nency.note.detail;
 
+import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
@@ -126,16 +127,12 @@ public class NoteActivity extends AppCompatActivity {
         locationHandler = new LocationHandler(this, new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull android.location.Location userLocation) {
-                address = locationHandler.getAddress(NoteActivity.this, userLocation.getLatitude(),
-                        userLocation.getLongitude());
-                location.setText(address);
-                lat = userLocation.getLatitude();
-                lng = userLocation.getLongitude();
+                updateLocation(userLocation);
             }
         });
 
         if (locationHandler.hasLocationPermission(this)) {
-            locationHandler.startUpdateLocation(this);
+            updateLocation(locationHandler.startUpdateLocation(this));
         } else {
             locationHandler.requestLocationPermission(this, LOCATION_REQUEST);
         }
@@ -147,9 +144,17 @@ public class NoteActivity extends AppCompatActivity {
             @NonNull int[] grantResults) {
         if (LOCATION_REQUEST == requestCode) {
             if (locationHandler.hasLocationPermission(this)) {
-                locationHandler.startUpdateLocation(this);
+                updateLocation(locationHandler.startUpdateLocation(this));
             }
         }
+    }
+
+    private void updateLocation(@NonNull Location userLocation) {
+        address = locationHandler.getAddress(NoteActivity.this, userLocation.getLatitude(),
+                userLocation.getLongitude());
+        location.setText(address);
+        lat = userLocation.getLatitude();
+        lng = userLocation.getLongitude();
     }
 
     private void updateNote() {
