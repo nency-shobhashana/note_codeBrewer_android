@@ -1,14 +1,9 @@
 package com.nency.note.room;
 
-import android.net.Uri;
-import android.widget.EditText;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
 
 import java.util.List;
 
@@ -41,18 +36,33 @@ public class Note {
     @ColumnInfo(name = "records")
     private List<String> records;
 
-//    @NonNull
-    @ColumnInfo(name = "placeAddress")
-    private String placeAddress;
+    @NonNull
+    @ColumnInfo(name = "address")
+    private String address;
+
+    @ColumnInfo(name = "lat")
+    private double lat;
+
+    @ColumnInfo(name = "lng")
+    private double lng;
+
 //    private Category category;
 
 
-    public Note(@NonNull String title, @NonNull String description, @NonNull String date,@NonNull String placeAddress, @NonNull List<String> images, @NonNull List<String> records) {
+    public Note(@NonNull String title,
+            @NonNull String description,
+            @NonNull String date,
+            @NonNull String address,
+            double lat,
+            double lng, @NonNull List<String> images,
+            @NonNull List<String> records) {
         this.title = title;
         this.description = description;
         this.date = date;
 //        this.modifiedDate = modifiedDate;
-        this.placeAddress = placeAddress;
+        this.address = address;
+        this.lat = lat;
+        this.lng = lng;
         this.images = images;
         this.records = records;
     }
@@ -101,13 +111,13 @@ public class Note {
 //        this.modifiedDate = modifiedDate;
 //    }
 
-//    @NonNull
-    public String getPlaceAddress() {
-        return placeAddress;
+    @NonNull
+    public String getAddress() {
+        return address;
     }
 
-    public void setPlaceAddress(@NonNull String placeAddress) {
-        this.placeAddress = placeAddress;
+    public void setAddress(@NonNull String address) {
+        this.address = address;
     }
 
     public List<String> getImages() {
@@ -124,5 +134,21 @@ public class Note {
 
     public void setRecords(List<String> records) {
         this.records = records;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
     }
 }

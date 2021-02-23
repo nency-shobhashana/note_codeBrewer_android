@@ -1,5 +1,6 @@
 package com.nency.note.detail;
 
+import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.nency.note.R;
@@ -25,13 +27,21 @@ import java.util.Locale;
 
 public class NoteActivity extends AppCompatActivity {
 
+    private static final int LOCATION_REQUEST = 101;
+
     int noteId = -1;
+
     EditText title, description;
     TextView category, date, location;
     ImageView iconImage, iconAudio;
     Button saveNote;
+
     ArrayList<Uri> imageList = new ArrayList<>();
     ArrayList<String> recordsList = new ArrayList<>();
+
+    private LocationHandler locationHandler;
+    private double lat = 0, lng = 0;
+    private String address = "";
 
     private NoteRoomDatabase noteRoomDatabase;
 
@@ -44,27 +54,8 @@ public class NoteActivity extends AppCompatActivity {
         // Room db
         noteRoomDatabase = noteRoomDatabase.getInstance(this);
 
-        title = findViewById(R.id.title);
-        description = findViewById(R.id.description);
-        category = findViewById(R.id.category);
-        date = findViewById(R.id.date);
-        location = findViewById(R.id.location);
-        iconImage = findViewById(R.id.iconImage);
-        iconAudio = findViewById(R.id.iconAudio);
-
-        iconImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImageListDialogFragment.newInstance(imageList).show(getSupportFragmentManager(), "dialog");
-            }
-        });
-
-        iconAudio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AudioRecordFragment.newInstance(recordsList).show(getSupportFragmentManager(), "dialog");
-            }
-        });
+        initViews();
+        initListener();
 
         // getting the current time
         Calendar cal = Calendar.getInstance();
@@ -72,7 +63,53 @@ public class NoteActivity extends AppCompatActivity {
         String createdDate = sdf.format(cal.getTime());
         date.setText(createdDate);
 
+        if (noteId >= 0) {
+            Note note = noteRoomDatabase.NoteDoa().getNote(noteId);
+            title.setText(note.getTitle());
+            description.setText(note.getDescription());
+            location.setText(note.getAddress());
+            date.setText(note.getDate());
+            List<String> images = note.getImages();
+            for (String path : images) {
+                if (!TextUtils.isEmpty(path)) {
+                    imageList.add(Uri.parse(path));
+                }
+            }
+            recordsList.addAll(note.getRecords());
+//            category.setText(note.getca());
+        } else {
+            initLocation();
+        }
+
+    }
+
+    private void initViews() {
+        title = findViewById(R.id.title);
+        description = findViewById(R.id.description);
+        category = findViewById(R.id.category);
+        date = findViewById(R.id.date);
+        location = findViewById(R.id.location);
+        iconImage = findViewById(R.id.iconImage);
+        iconAudio = findViewById(R.id.iconAudio);
         saveNote = findViewById(R.id.saveNote);
+    }
+
+    private void initListener() {
+        iconImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageListDialogFragment.newInstance(imageList)
+                        .show(getSupportFragmentManager(), "dialog");
+            }
+        });
+
+        iconAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AudioRecordFragment.newInstance(recordsList)
+                        .show(getSupportFragmentManager(), "dialog");
+            }
+        });
         saveNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,23 +120,36 @@ public class NoteActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-        if (noteId >= 0) {
-            Note note = noteRoomDatabase.NoteDoa().getNote(noteId);
-            title.setText(note.getTitle());
-            description.setText(note.getDescription());
-            location.setText(note.getPlaceAddress());
-            date.setText(note.getDate());
-            List<String> images = note.getImages();
-            for (String path : images) {
-                if (!TextUtils.isEmpty(path)) {
-                    imageList.add(Uri.parse(path));
-                }
+    private void initLocation() {
+        locationHandler = new LocationHandler(this, new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull android.location.Location userLocation) {
+                address = locationHandler.getAddress(NoteActivity.this, userLocation.getLatitude(),
+                        userLocation.getLongitude());
+                location.setText(address);
+                lat = userLocation.getLatitude();
+                lng = userLocation.getLongitude();
             }
-            recordsList.addAll(note.getRecords());
-//            category.setText(note.getca());
-        }
+        });
 
+        if (locationHandler.hasLocationPermission(this)) {
+            locationHandler.startUpdateLocation(this);
+        } else {
+            locationHandler.requestLocationPermission(this, LOCATION_REQUEST);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+        if (LOCATION_REQUEST == requestCode) {
+            if (locationHandler.hasLocationPermission(this)) {
+                locationHandler.startUpdateLocation(this);
+            }
+        }
     }
 
     private void updateNote() {
@@ -111,15 +161,18 @@ public class NoteActivity extends AppCompatActivity {
             images.add(uri.toString());
         }
 
-        noteRoomDatabase.NoteDoa().updateNote(noteId, noteTitle, noteDesc, Converter.toString(images), Converter.toString(recordsList));
+        noteRoomDatabase.NoteDoa()
+                .updateNote(noteId,
+                        noteTitle,
+                        noteDesc,
+                        Converter.toString(images),
+                        Converter.toString(recordsList));
         redirectAllNotes();
     }
 
     private void addNote() {
         String noteTitle = title.getText().toString();
         String noteDesc = description.getText().toString();
-
-        String location = "Canada";
 
         if (noteTitle.isEmpty()) {
             title.setError("Note title cannot be empty.");
@@ -138,15 +191,17 @@ public class NoteActivity extends AppCompatActivity {
         }
 
         // Insert note into room
-        Note note = new Note(noteTitle, noteDesc, date.getText().toString(), location, images, recordsList);
+        Note note = new Note(noteTitle, noteDesc, date.getText().toString(), address,
+                lat,
+                lng,
+                images,
+                recordsList);
         noteRoomDatabase.NoteDoa().insertNote(note);
         Toast.makeText(this, "Note Added", Toast.LENGTH_SHORT).show();
         redirectAllNotes();
     }
 
     private void redirectAllNotes() {
-//        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-//        startActivity(i);
         finish();
     }
 }
