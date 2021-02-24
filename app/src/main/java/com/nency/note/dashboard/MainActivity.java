@@ -1,10 +1,12 @@
 package com.nency.note.dashboard;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nency.note.detail.CategoryListDialogFragment;
+import com.nency.note.interfaces.OnCategoryActionListener;
 import com.nency.note.interfaces.OnCategorySelectListener;
 import com.nency.note.interfaces.OnItemClickListener;
 import com.nency.note.R;
@@ -14,6 +16,7 @@ import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -21,10 +24,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.view.LayoutInflater;
 import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -40,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     ArrayList<Note> notes = new ArrayList();
     ArrayList<Note> filterNotes = new ArrayList();
+    ArrayList<Category> filterCategory = new ArrayList<>();
+    ArrayList<Integer> filterCategoriesId = new ArrayList<>();
     private NoteRoomDatabase noteRoomDatabase;
 
     @Override
@@ -81,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     protected void onResume() {
         super.onResume();
         loadNotes();
-        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     private void initRecyclerView() {
@@ -121,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.appFilter){
-            CategoryFilterListDialogFragment.newInstance(this)
+            CategoryFilterListDialogFragment.newInstance(filterCategory, this)
                     .show(getSupportFragmentManager(), "dialog");
             return true;
         } else {
@@ -131,9 +137,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     public void loadNotes() {
         notes.clear();
-        notes.addAll(noteRoomDatabase.NoteDoa().getAllNotes());
+        notes.addAll(noteRoomDatabase.NoteDoa().getAllFilterNotes(filterCategoriesId));
         filterNotes.clear();
         filterNotes.addAll(notes);
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -145,6 +152,13 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     @Override
     public void onCategorySelected(Category category) {
-
+        if(filterCategory.contains(category)){
+            filterCategory.remove(category);
+            filterCategoriesId.remove(Integer.valueOf(category.getId()));
+        } else {
+            filterCategory.add(category);
+            filterCategoriesId.add(category.getId());
+        }
+        loadNotes();
     }
 }

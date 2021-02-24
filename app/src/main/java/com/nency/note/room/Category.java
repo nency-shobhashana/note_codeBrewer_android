@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 @Entity(tableName = "category")
 public class Category {
 
@@ -48,5 +50,17 @@ public class Category {
 
     public void setNoOfNotes(int noOfNotes) {
         this.noOfNotes = noOfNotes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Category category = (Category) o;
+        return id == category.id;
     }
 }

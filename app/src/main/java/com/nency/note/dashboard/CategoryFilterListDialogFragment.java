@@ -1,13 +1,12 @@
 package com.nency.note.dashboard;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.nency.note.R;
+import com.nency.note.interfaces.OnCategoryActionListener;
 import com.nency.note.interfaces.OnCategorySelectListener;
 import com.nency.note.room.Category;
 import com.nency.note.room.NoteRoomDatabase;
@@ -24,19 +24,20 @@ import com.nency.note.room.NoteRoomDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment {
+public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment implements OnCategoryActionListener {
 
     private OnCategorySelectListener onCategorySelectListener;
     private NoteRoomDatabase noteRoomDatabase;
 
     private ArrayList<Category> categories = new ArrayList<>();
-
+    ArrayList<Category> filterCategory;
     private RecyclerView recyclerView ;
-    private Button btnAddCategory;
 
-    public static CategoryFilterListDialogFragment newInstance(@NonNull OnCategorySelectListener onCategorySelectListener) {
+    public static CategoryFilterListDialogFragment newInstance(ArrayList<Category> filterCategory,
+            @NonNull OnCategorySelectListener onCategoryActionListener) {
         final CategoryFilterListDialogFragment fragment = new CategoryFilterListDialogFragment();
-        fragment.onCategorySelectListener = onCategorySelectListener;
+        fragment.filterCategory = filterCategory;
+        fragment.onCategorySelectListener = onCategoryActionListener;
         return fragment;
     }
 
@@ -44,103 +45,114 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.category_list_dialog_fragment, container, false);
+        return inflater.inflate(R.layout.category_filter_list_dialog_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        btnAddCategory = view.findViewById(R.id.btnAddCategory);
         recyclerView = view.findViewById(R.id.listCategory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new CategoryAdapter(categories, onCategorySelectListener));
+        recyclerView.setAdapter(new CategoryAdapter(categories, filterCategory, this));
+        noteRoomDatabase = NoteRoomDatabase.getInstance(requireContext());
+
         loadCategory();
-        loadListener();
     }
 
-    private void loadListener() {
-        btnAddCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddNewCategoryAlert();
-            }
-        });
+    private void loadCategory(){
+        categories.clear();
+        categories.addAll(noteRoomDatabase.CategoryDao().getAllCategories());
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
-    private void showAddNewCategoryAlert() {
+    @Override
+    public void onCategorySelected(Category category) {
+        onCategorySelectListener.onCategorySelected(category);
+        recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCategoryEditSelected(Category category) {
+        showUpdateCategoryAlert(category);
+    }
+
+    @Override
+    public void onCategoryRemoveSelected(Category category) {
+        noteRoomDatabase.CategoryDao().deleteCategory(category.getId());
+        loadCategory();
+    }
+
+    private void showUpdateCategoryAlert(Category category) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
         LayoutInflater inflater = this.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.add_new_category_dialog, null);
         dialogBuilder.setView(dialogView);
 
         final EditText edt = (EditText) dialogView.findViewById(R.id.edit1);
+        edt.setText(category.getName());
 
-        dialogBuilder.setTitle("Add New Category");
-        dialogBuilder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                addCategory(edt.getText().toString());
-            }
-        });
-        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //pass
-            }
-        });
+        dialogBuilder.setTitle("Edit Category");
+        dialogBuilder.setPositiveButton("Update",
+                (dialog, whichButton) -> updateCategory(category, edt.getText().toString()));
+        dialogBuilder.setNegativeButton("Cancel", (dialog, whichButton) -> {});
         dialogBuilder.create().show();
     }
 
-    private void addCategory(String category){
-        noteRoomDatabase.CategoryDao().insertCategory(new Category(category, 0));
+    private void updateCategory(Category category, String newName){
+        noteRoomDatabase.CategoryDao().updateCategory(category.getId(), newName);
         loadCategory();
-    }
-
-    private void loadCategory(){
-        noteRoomDatabase = NoteRoomDatabase.getInstance(requireContext());
-        categories.clear();
-        categories.addAll(noteRoomDatabase.CategoryDao().getAllCategories());
-        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {
 
-        final TextView text;
+        final CheckedTextView text;
         Category category;
 
         ViewHolder(LayoutInflater inflater,
                 ViewGroup parent,
-                final OnCategorySelectListener onCategorySelectListener) {
+                final OnCategoryActionListener onCategoryActionListener) {
             // TODO: Customize the item layout
-            super(inflater.inflate(R.layout.category_list_dialog_item, parent, false));
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onCategorySelectListener.onCategorySelected(category);
-                }
-            });
-            text = itemView.findViewById(R.id.text);
+            super(inflater.inflate(R.layout.category_filter_list_dialog_item, parent, false));
+            itemView.setOnClickListener(v -> onCategoryActionListener.onCategorySelected(category));
+            itemView.findViewById(R.id.btnEdit).setOnClickListener(v -> onCategoryActionListener.onCategoryEditSelected(category));
+            itemView.findViewById(R.id.btnRemove).setOnClickListener(v -> onCategoryActionListener.onCategoryRemoveSelected(category));
+            text = itemView.findViewById(R.id.categoryTitle);
         }
     }
 
     private class CategoryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         private final List<Category> categories;
-        private final OnCategorySelectListener onCategorySelectListener;
+        private final OnCategoryActionListener onCategoryActionListener;
+        private final ArrayList<Category> filterCategory;
 
         CategoryAdapter(List<Category> categories,
-                OnCategorySelectListener onCategorySelectListener) {
+                ArrayList<Category> filterCategory,
+                OnCategoryActionListener onCategoryActionListener) {
             this.categories = categories;
-            this.onCategorySelectListener = onCategorySelectListener;
+            this.filterCategory = filterCategory;
+            this.onCategoryActionListener = onCategoryActionListener;
         }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, onCategorySelectListener);
+            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent,
+                    onCategoryActionListener);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.category = categories.get(position);
-            holder.text.setText(categories.get(position).getName());
+            Category category = categories.get(position);
+            holder.category = category;
+            holder.text.setText(String.format("%s (%d)",
+                    category.getName(),
+                    category.getNoOfNotes()));
+
+            if(!filterCategory.contains(category)){
+                holder.text.setCheckMarkDrawable(R.drawable.ic_check);
+            } else {
+                holder.text.setCheckMarkDrawable(null);
+            }
         }
 
         @Override

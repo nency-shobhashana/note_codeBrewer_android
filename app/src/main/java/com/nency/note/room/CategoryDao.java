@@ -14,11 +14,11 @@ public interface CategoryDao {
     @Query("DELETE FROM category")
     void deleteAllCategories();
 
-    @Query("DELETE FROM note WHERE id = :id")
+    @Query("DELETE FROM category WHERE id = :id")
     void deleteCategory(int id);
 
-    @Query("UPDATE category SET name = :name, noOfNotes = :noOfNotes")
-    void updateCategory(String name, String noOfNotes);
+    @Query("UPDATE category SET name = :name WHERE id = :id")
+    void updateCategory(int id, String name);
 
     @Query("SELECT * FROM category ORDER BY name")
     List<Category> getAllCategories();
