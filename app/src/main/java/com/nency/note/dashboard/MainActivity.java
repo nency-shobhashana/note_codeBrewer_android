@@ -11,6 +11,7 @@ import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     RecyclerView.LayoutManager layoutManager;
 
     ArrayList<Note> notes = new ArrayList();
+    ArrayList<Note> filterNotes = new ArrayList();
     private NoteRoomDatabase noteRoomDatabase;
 
     @Override
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 //        notes = Database.getNotes();
 
         // set adapter
-        myAdapter = new NoteAdapter(this, notes, this);
+        myAdapter = new NoteAdapter(this, filterNotes, this);
         initRecyclerView();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -68,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         // Room db
         noteRoomDatabase = NoteRoomDatabase.getInstance(this);
-        loadNotes();
     }
 
     @Override
@@ -89,27 +90,34 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        MenuItem mSearch = menu.findItem(R.id.appSearchBar);
+        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        mSearchView.setQueryHint("Search");
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterNotes.clear();
+                for (Note note : notes) {
+                    if(note.getTitle().contains(newText)){
+                        filterNotes.add(note);
+                    }
+                }
+                recyclerView.getAdapter().notifyDataSetChanged();
+                return true;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     public void loadNotes() {
         notes.clear();
         notes.addAll(noteRoomDatabase.NoteDoa().getAllNotes());
+        filterNotes.clear();
+        filterNotes.addAll(notes);
     }
 
     @Override
