@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         });
 
         // Room db
-        noteRoomDatabase = noteRoomDatabase.getInstance(this);
+        noteRoomDatabase = NoteRoomDatabase.getInstance(this);
         loadNotes();
     }
 

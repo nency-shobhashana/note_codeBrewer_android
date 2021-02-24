@@ -18,10 +18,21 @@ import android.widget.TextView;
 import com.nency.note.R;
 import com.nency.note.interfaces.OnCategorySelectListener;
 import com.nency.note.interfaces.OnItemClickListener;
+import com.nency.note.room.Category;
+import com.nency.note.room.NoteRoomDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryListDialogFragment extends BottomSheetDialogFragment
         implements OnItemClickListener {
+
     private OnCategorySelectListener onCategorySelectListener;
+    private NoteRoomDatabase noteRoomDatabase;
+
+    private ArrayList<Category> categories = new ArrayList<>();
+
+    private RecyclerView recyclerView ;
 
     public static CategoryListDialogFragment newInstance(@NonNull OnCategorySelectListener onCategorySelectListener) {
         final CategoryListDialogFragment fragment = new CategoryListDialogFragment();
@@ -38,14 +49,21 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        final RecyclerView recyclerView = (RecyclerView) view;
+        recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new CategoryAdapter(30, this));
+        recyclerView.setAdapter(new CategoryAdapter(categories, this));
+        loadCategory();
+    }
+
+    private void loadCategory(){
+        noteRoomDatabase = NoteRoomDatabase.getInstance(requireContext());
+        categories.addAll(noteRoomDatabase.CategoryDao().getAllCategories());
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
     public void onItemClick(int id) {
-
+        onCategorySelectListener.onCategorySelected(id);
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {
@@ -70,12 +88,12 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment
 
     private class CategoryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-        private final int mItemCount;
-        private OnItemClickListener onItemClickListener;
+        private final List<Category> categories;
+        private final OnItemClickListener onItemClickListener;
 
-        CategoryAdapter(int itemCount,
+        CategoryAdapter(List<Category> categories,
                 OnItemClickListener onItemClickListener) {
-            mItemCount = itemCount;
+            this.categories = categories;
             this.onItemClickListener = onItemClickListener;
         }
 
@@ -87,13 +105,13 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.id = position;
-            holder.text.setText(String.valueOf(position));
+            holder.id = categories.get(position).getId();
+            holder.text.setText(categories.get(position).getName());
         }
 
         @Override
         public int getItemCount() {
-            return mItemCount;
+            return categories.size();
         }
 
     }
