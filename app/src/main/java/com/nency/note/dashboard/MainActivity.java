@@ -114,7 +114,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             public boolean onQueryTextChange(String newText) {
                 filterNotes.clear();
                 for (Note note : notes) {
-                    if(note.getTitle().contains(newText)){
+                    if(note.getTitle().toLowerCase().contains(newText.toLowerCase())
+                    || note.getDescription().toLowerCase().contains(newText.toLowerCase())){
                         filterNotes.add(note);
                     }
                 }
