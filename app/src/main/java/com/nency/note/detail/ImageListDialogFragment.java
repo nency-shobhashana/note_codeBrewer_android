@@ -28,7 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.nency.note.R;
-import com.nency.note.interfaces.OnItemClickListener;
+import com.nency.note.interfaces.OnImageItemClickListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.util.List;
 import static android.app.Activity.RESULT_OK;
 
 public class ImageListDialogFragment extends BottomSheetDialogFragment
-        implements OnItemClickListener {
+        implements OnImageItemClickListener {
 
     private RecyclerView recyclerView;
 
@@ -61,7 +61,7 @@ public class ImageListDialogFragment extends BottomSheetDialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_item_list_dialog_list_dialog, container, false);
+        return inflater.inflate(R.layout.image_list_dialog_fragment, container, false);
     }
 
     @Override
@@ -100,6 +100,12 @@ public class ImageListDialogFragment extends BottomSheetDialogFragment
         } else {
             selectImage(requireContext());
         }
+    }
+
+    @Override
+    public void onItemRemoveClick(int id) {
+        imageList.remove(id);
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     private void selectImage(Context context) {
@@ -192,32 +198,29 @@ public class ImageListDialogFragment extends BottomSheetDialogFragment
 
     private static class ImageViewHolder extends RecyclerView.ViewHolder {
         int position = 0;
-        final ImageView image;
+        final ImageView image, btnRemove;
 
         ImageViewHolder(LayoutInflater inflater, ViewGroup parent,
-                final OnItemClickListener onItemClickListener) {
+                final OnImageItemClickListener onImageItemClickListener) {
             // TODO: Customize the item layout
-            super(inflater.inflate(R.layout.fragment_item_list_dialog_list_dialog_item,
+            super(inflater.inflate(R.layout.image_list_dialog_item,
                     parent,
                     false));
             image = itemView.findViewById(R.id.image);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick(position);
-                }
-            });
+            btnRemove = itemView.findViewById(R.id.btnRemove);
+            itemView.setOnClickListener(v -> onImageItemClickListener.onItemClick(position));
+            btnRemove.setOnClickListener(v -> onImageItemClickListener.onItemRemoveClick(position - 1));
         }
     }
 
     private static class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder> {
 
         private final List<Uri> imageList;
-        private final OnItemClickListener onItemClickListener;
+        private final OnImageItemClickListener onImageItemClickListener;
 
-        ImageAdapter(List<Uri> imageList, OnItemClickListener onItemClickListener) {
+        ImageAdapter(List<Uri> imageList, OnImageItemClickListener onImageItemClickListener) {
             this.imageList = imageList;
-            this.onItemClickListener = onItemClickListener;
+            this.onImageItemClickListener = onImageItemClickListener;
         }
 
         @NonNull
@@ -225,15 +228,17 @@ public class ImageListDialogFragment extends BottomSheetDialogFragment
         public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new ImageViewHolder(LayoutInflater.from(parent.getContext()),
                     parent,
-                    onItemClickListener);
+                    onImageItemClickListener);
         }
 
         @Override
         public void onBindViewHolder(ImageViewHolder holder, int position) {
             if (position == 0){
                 holder.image.setImageResource(R.drawable.ic_add_photo);
+                holder.btnRemove.setVisibility(View.GONE);
             } else {
                 holder.image.setImageURI(imageList.get(position - 1));
+                holder.btnRemove.setVisibility(View.VISIBLE);
                 holder.position = position;
             }
         }
