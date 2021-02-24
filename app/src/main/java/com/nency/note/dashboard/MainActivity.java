@@ -11,6 +11,7 @@ import com.nency.note.interfaces.OnCategorySelectListener;
 import com.nency.note.interfaces.OnItemClickListener;
 import com.nency.note.R;
 import com.nency.note.detail.NoteActivity;
+import com.nency.note.map.MapsActivity;
 import com.nency.note.room.Category;
 import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
@@ -129,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         if(item.getItemId() == R.id.appFilter){
             CategoryFilterListDialogFragment.newInstance(filterCategory, this)
                     .show(getSupportFragmentManager(), "dialog");
+            return true;
+        }else if(item.getItemId() == R.id.appMap){
+            startActivity(new Intent(this, MapsActivity.class));
             return true;
         } else {
             return super.onOptionsItemSelected(item);
