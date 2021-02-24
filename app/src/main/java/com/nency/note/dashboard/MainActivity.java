@@ -4,12 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nency.note.detail.CategoryListDialogFragment;
+import com.nency.note.interfaces.OnCategorySelectListener;
 import com.nency.note.interfaces.OnItemClickListener;
 import com.nency.note.R;
 import com.nency.note.detail.NoteActivity;
+import com.nency.note.room.Category;
 import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -24,7 +28,8 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements OnItemClickListener,
+        OnCategorySelectListener {
 
 
     private static final int NUM_COLUMNS = 2;
@@ -113,6 +118,17 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.appFilter){
+            CategoryFilterListDialogFragment.newInstance(this)
+                    .show(getSupportFragmentManager(), "dialog");
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
     public void loadNotes() {
         notes.clear();
         notes.addAll(noteRoomDatabase.NoteDoa().getAllNotes());
@@ -125,5 +141,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         Intent i = new Intent(this, NoteActivity.class);
         i.putExtra("NoteId", id);
         startActivity(i);
+    }
+
+    @Override
+    public void onCategorySelected(Category category) {
+
     }
 }
