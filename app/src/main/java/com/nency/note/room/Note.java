@@ -46,8 +46,8 @@ public class Note {
     @ColumnInfo(name = "lng")
     private double lng;
 
-//    private Category category;
-
+    @ColumnInfo(name = "categoryId")
+    private int categoryId;
 
     public Note(@NonNull String title,
             @NonNull String description,
@@ -55,7 +55,7 @@ public class Note {
             @NonNull String address,
             double lat,
             double lng, @NonNull List<String> images,
-            @NonNull List<String> records) {
+            @NonNull List<String> records, int categoryId) {
         this.title = title;
         this.description = description;
         this.date = date;
@@ -65,6 +65,7 @@ public class Note {
         this.lng = lng;
         this.images = images;
         this.records = records;
+        this.categoryId = categoryId;
     }
 
     public int getId() {
@@ -150,5 +151,13 @@ public class Note {
 
     public void setLat(double lat) {
         this.lat = lat;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 }

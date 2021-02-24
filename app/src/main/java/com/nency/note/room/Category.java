@@ -19,8 +19,7 @@ public class Category {
     @ColumnInfo(name = "noOfNotes")
     private int noOfNotes;
 
-    public Category(int id, @NonNull String name, @NonNull int noOfNotes) {
-        this.id = id;
+    public Category( @NonNull String name, @NonNull int noOfNotes) {
         this.name = name;
         this.noOfNotes = noOfNotes;
     }

@@ -28,8 +28,7 @@ import com.nency.note.room.NoteRoomDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryListDialogFragment extends BottomSheetDialogFragment
-        implements OnItemClickListener {
+public class CategoryListDialogFragment extends BottomSheetDialogFragment {
 
     private OnCategorySelectListener onCategorySelectListener;
     private NoteRoomDatabase noteRoomDatabase;
@@ -57,7 +56,7 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment
         btnAddCategory = view.findViewById(R.id.btnAddCategory);
         recyclerView = view.findViewById(R.id.listCategory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new CategoryAdapter(categories, this));
+        recyclerView.setAdapter(new CategoryAdapter(categories, onCategorySelectListener));
         loadCategory();
         loadListener();
     }
@@ -94,34 +93,31 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment
     }
 
     private void addCategory(String category){
-
+        noteRoomDatabase.CategoryDao().insertCategory(new Category(category, 0));
+        loadCategory();
     }
 
     private void loadCategory(){
         noteRoomDatabase = NoteRoomDatabase.getInstance(requireContext());
+        categories.clear();
         categories.addAll(noteRoomDatabase.CategoryDao().getAllCategories());
         recyclerView.getAdapter().notifyDataSetChanged();
-    }
-
-    @Override
-    public void onItemClick(int id) {
-        onCategorySelectListener.onCategorySelected(id);
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {
 
         final TextView text;
-        int id;
+        Category category;
 
         ViewHolder(LayoutInflater inflater,
                 ViewGroup parent,
-                final OnItemClickListener onItemClickListener) {
+                final OnCategorySelectListener onCategorySelectListener) {
             // TODO: Customize the item layout
             super(inflater.inflate(R.layout.category_list_dialog_item, parent, false));
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onItemClick(id);
+                    onCategorySelectListener.onCategorySelected(category);
                 }
             });
             text = itemView.findViewById(R.id.text);
@@ -131,23 +127,23 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment
     private class CategoryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         private final List<Category> categories;
-        private final OnItemClickListener onItemClickListener;
+        private final OnCategorySelectListener onCategorySelectListener;
 
         CategoryAdapter(List<Category> categories,
-                OnItemClickListener onItemClickListener) {
+                OnCategorySelectListener onCategorySelectListener) {
             this.categories = categories;
-            this.onItemClickListener = onItemClickListener;
+            this.onCategorySelectListener = onCategorySelectListener;
         }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, onItemClickListener);
+            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, onCategorySelectListener);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.id = categories.get(position).getId();
+            holder.category = categories.get(position);
             holder.text.setText(categories.get(position).getName());
         }
 

@@ -25,5 +25,5 @@ public interface NoteDao {
     List<Note> getAllNotes();
 
     @Query("SELECT * FROM note where id == :id")
-    Note getNote(int id);
+    NoteWithCategory getNote(int id);
 }

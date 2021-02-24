@@ -22,4 +22,7 @@ public interface CategoryDao {
 
     @Query("SELECT * FROM category ORDER BY name")
     List<Category> getAllCategories();
+
+    @Query("SELECT * FROM category WHERE name == 'UnCategorised'")
+    Category getUnCategorised();
 }

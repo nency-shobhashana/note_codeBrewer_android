@@ -17,9 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.nency.note.R;
 import com.nency.note.interfaces.OnCategorySelectListener;
+import com.nency.note.room.Category;
 import com.nency.note.room.Converter;
 import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
+import com.nency.note.room.NoteWithCategory;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
     int noteId = -1;
 
     EditText title, description;
-    TextView category, date, location;
+    TextView txtCategory, date, location;
     ImageView iconCategory, iconImage, iconAudio;
     Button saveNote;
 
@@ -46,6 +48,8 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
     private String address = "";
 
     private NoteRoomDatabase noteRoomDatabase;
+
+    private Category category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +70,10 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
         date.setText(createdDate);
 
         if (noteId >= 0) {
-            Note note = noteRoomDatabase.NoteDoa().getNote(noteId);
+            NoteWithCategory noteWithCategory = noteRoomDatabase.NoteDoa().getNote(noteId);
+            Note note = noteWithCategory.note;
+            category = noteWithCategory.category;
+
             title.setText(note.getTitle());
             description.setText(note.getDescription());
             location.setText(note.getAddress());
@@ -78,17 +85,26 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
                 }
             }
             recordsList.addAll(note.getRecords());
-//            category.setText(note.getca());
         } else {
             initLocation();
+            createOrSetUnCategorised();
         }
+        txtCategory.setText(category.getName());
+    }
 
+    private void createOrSetUnCategorised() {
+        category = noteRoomDatabase.CategoryDao().getUnCategorised();
+        if(category == null) {
+            category = new Category("UnCategorised", 0);
+            noteRoomDatabase.CategoryDao().insertCategory(category);
+            category = noteRoomDatabase.CategoryDao().getUnCategorised();
+        }
     }
 
     private void initViews() {
         title = findViewById(R.id.title);
         description = findViewById(R.id.description);
-        category = findViewById(R.id.category);
+        txtCategory = findViewById(R.id.category);
         date = findViewById(R.id.date);
         location = findViewById(R.id.location);
         iconCategory = findViewById(R.id.iconCategory);
@@ -166,8 +182,8 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
     }
 
     @Override
-    public void onCategorySelected(int categoryId) {
-
+    public void onCategorySelected(Category category) {
+        this.category = category;
     }
 
     private void updateNote() {
@@ -213,7 +229,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
                 lat,
                 lng,
                 images,
-                recordsList);
+                recordsList, category.getId());
         noteRoomDatabase.NoteDoa().insertNote(note);
         Toast.makeText(this, "Note Added", Toast.LENGTH_SHORT).show();
         redirectAllNotes();
