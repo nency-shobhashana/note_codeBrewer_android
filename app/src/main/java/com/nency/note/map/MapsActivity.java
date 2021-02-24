@@ -1,6 +1,7 @@
 package com.nency.note.map;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -15,18 +16,22 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nency.note.R;
 import com.nency.note.detail.LocationHandler;
+import com.nency.note.detail.NoteActivity;
 import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     ArrayList<Note> notes = new ArrayList();
+    HashMap<Marker, Note> mapMarkerNote= new HashMap();
     private NoteRoomDatabase noteRoomDatabase;
 
     @Override
@@ -62,10 +67,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void displayMarker() {
         mMap.clear();
+        mapMarkerNote.clear();
         for (Note note : notes) {
             LatLng noteLocation = new LatLng(note.getLat(), note.getLng());
-            mMap.addMarker(new MarkerOptions().position(noteLocation).title(note.getTitle()));
+            Marker marker =
+                    mMap.addMarker(new MarkerOptions().position(noteLocation).title(note.getTitle()));
+            mapMarkerNote.put(marker, note);
         }
+
+        mMap.setOnMarkerClickListener(marker -> {
+            Note note = mapMarkerNote.get(marker);
+            onMarkerClicked(note);
+            return true;
+        });
     }
 
     private void moveToUserLocation() {
@@ -90,5 +104,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .build();                   // Creates a CameraPosition from the builder
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
+    }
+
+    private void onMarkerClicked(Note note){
+        Intent i = new Intent(this, NoteActivity.class);
+        i.putExtra("NoteId", note.getId());
+        startActivity(i);
     }
 }
