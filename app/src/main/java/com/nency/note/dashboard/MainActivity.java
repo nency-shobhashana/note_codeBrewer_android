@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     RecyclerView recyclerView;
     RecyclerView.Adapter myAdapter;
     RecyclerView.LayoutManager layoutManager;
+    private boolean sortByDate = false;
 
     ArrayList<Note> notes = new ArrayList();
     ArrayList<Note> filterNotes = new ArrayList();
@@ -132,8 +133,16 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             CategoryFilterListDialogFragment.newInstance(filterCategory, this)
                     .show(getSupportFragmentManager(), "dialog");
             return true;
-        }else if(item.getItemId() == R.id.appMap){
+        } else if(item.getItemId() == R.id.appMap){
             startActivity(new Intent(this, MapsActivity.class));
+            return true;
+        } else if(item.getItemId() == R.id.sortByTitle){
+            sortByDate = false;
+            loadNotes();
+            return true;
+        } else if(item.getItemId() == R.id.sortByDate){
+            sortByDate = true;
+            loadNotes();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -142,7 +151,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     public void loadNotes() {
         notes.clear();
-        notes.addAll(noteRoomDatabase.NoteDoa().getAllFilterNotes(filterCategoriesId));
+        notes.addAll(noteRoomDatabase.NoteDoa().getAllFilterNotes(filterCategoriesId,
+                String.valueOf(sortByDate)));
         filterNotes.clear();
         filterNotes.addAll(notes);
         recyclerView.getAdapter().notifyDataSetChanged();

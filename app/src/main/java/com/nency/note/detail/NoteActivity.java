@@ -65,7 +65,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
 
         // getting the current time
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd hh:mm:ss", Locale.CANADA);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CANADA);
         String createdDate = sdf.format(cal.getTime());
         date.setText(createdDate);
 
