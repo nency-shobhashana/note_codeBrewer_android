@@ -18,10 +18,10 @@ import java.util.Locale;
 
 public class LocationHandler {
 
-    LocationManager locationManager;
+   public LocationManager locationManager;
     LocationListener locationListener;
 
-    LocationHandler(Context context, LocationListener locationListener){
+    public LocationHandler(Context context, LocationListener locationListener){
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         this.locationListener = locationListener;
     }
