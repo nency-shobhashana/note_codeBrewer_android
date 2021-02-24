@@ -1,5 +1,6 @@
 package com.nency.note.detail;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -7,12 +8,15 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.nency.note.R;
@@ -33,6 +37,7 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment
     private ArrayList<Category> categories = new ArrayList<>();
 
     private RecyclerView recyclerView ;
+    private Button btnAddCategory;
 
     public static CategoryListDialogFragment newInstance(@NonNull OnCategorySelectListener onCategorySelectListener) {
         final CategoryListDialogFragment fragment = new CategoryListDialogFragment();
@@ -49,10 +54,47 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        recyclerView = (RecyclerView) view;
+        btnAddCategory = view.findViewById(R.id.btnAddCategory);
+        recyclerView = view.findViewById(R.id.listCategory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new CategoryAdapter(categories, this));
         loadCategory();
+        loadListener();
+    }
+
+    private void loadListener() {
+        btnAddCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddNewCategoryAlert();
+            }
+        });
+    }
+
+    private void showAddNewCategoryAlert() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.add_new_category_dialog, null);
+        dialogBuilder.setView(dialogView);
+
+        final EditText edt = (EditText) dialogView.findViewById(R.id.edit1);
+
+        dialogBuilder.setTitle("Add New Category");
+        dialogBuilder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                addCategory(edt.getText().toString());
+            }
+        });
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //pass
+            }
+        });
+        dialogBuilder.create().show();
+    }
+
+    private void addCategory(String category){
+
     }
 
     private void loadCategory(){
