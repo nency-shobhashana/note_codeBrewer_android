@@ -2,6 +2,7 @@ package com.nency.note.dashboard;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,12 +60,23 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-        holder.id = notes.get(position).getId();
-        holder.itemView.setTag(notes.get(position));
-        holder.title.setText(notes.get(position).getTitle());
-        holder.description.setText(notes.get(position).getDescription());
-        holder.image.setImageResource(R.drawable.nature);
+        Note note = notes.get(position);
+        holder.id = note.getId();
+        holder.itemView.setTag(note);
+        holder.title.setText(note.getTitle());
+        holder.description.setText(note.getDescription());
+        displayImageIfIsThere(holder, note);
     }
+
+    private void displayImageIfIsThere(@NonNull NoteViewHolder holder, Note note) {
+        if(note.getImages().size() > 0) {
+            holder.image.setImageURI(Uri.parse(note.getImages().get(0)));
+            holder.image.setVisibility(View.VISIBLE);
+        }else {
+            holder.image.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     public int getItemCount() {
@@ -75,6 +87,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         }
     }
 
+    // grid spacing code
     public static class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
         private int spanCount;
