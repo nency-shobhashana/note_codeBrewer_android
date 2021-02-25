@@ -118,6 +118,7 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment {
                 @Override
                 public void onClick(View v) {
                     onCategorySelectListener.onCategorySelected(category);
+                    dismiss();
                 }
             });
             text = itemView.findViewById(R.id.text);

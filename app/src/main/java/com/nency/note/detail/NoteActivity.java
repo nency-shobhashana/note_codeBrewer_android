@@ -89,7 +89,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
             initLocation();
             createOrSetUnCategorised();
         }
-        txtCategory.setText(category.getName());
+        txtCategory.setText("Category : " +category.getName());
     }
 
     private void createOrSetUnCategorised() {
@@ -184,6 +184,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
     @Override
     public void onCategorySelected(Category category) {
         this.category = category;
+        txtCategory.setText("Category : " +category.getName());
     }
 
     private void updateNote() {

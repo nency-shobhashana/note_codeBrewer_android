@@ -44,7 +44,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             });
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
-            category = itemView.findViewById(R.id.category);
             date = itemView.findViewById(R.id.date);
             image = itemView.findViewById(R.id.image);
         }
@@ -63,7 +62,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         holder.itemView.setTag(notes.get(position));
         holder.title.setText(notes.get(position).getTitle());
         holder.description.setText(notes.get(position).getDescription());
-//        holder.category.setText(notes.get(position).getCategory().getName());
         holder.image.setImageResource(R.drawable.nature);
     }
 
