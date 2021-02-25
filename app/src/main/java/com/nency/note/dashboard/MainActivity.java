@@ -15,6 +15,7 @@ import com.nency.note.map.MapsActivity;
 import com.nency.note.room.Category;
 import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
+import com.nency.note.room.NoteWithCategory;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -45,8 +46,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     RecyclerView.LayoutManager layoutManager;
     private boolean sortByDate = false;
 
-    ArrayList<Note> notes = new ArrayList();
-    ArrayList<Note> filterNotes = new ArrayList();
+    ArrayList<NoteWithCategory> notes = new ArrayList();
+    ArrayList<NoteWithCategory> filterNotes = new ArrayList();
     ArrayList<Category> filterCategory = new ArrayList<>();
     ArrayList<Integer> filterCategoriesId = new ArrayList<>();
     private NoteRoomDatabase noteRoomDatabase;
@@ -105,10 +106,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             @Override
             public boolean onQueryTextChange(String newText) {
                 filterNotes.clear();
-                for (Note note : notes) {
-                    if(note.getTitle().toLowerCase().contains(newText.toLowerCase())
-                    || note.getDescription().toLowerCase().contains(newText.toLowerCase())){
-                        filterNotes.add(note);
+                for (NoteWithCategory noteWithCategory : notes) {
+                    if(noteWithCategory.note.getTitle().toLowerCase().contains(newText.toLowerCase())
+                    || noteWithCategory.note.getDescription().toLowerCase().contains(newText.toLowerCase())){
+                        filterNotes.add(noteWithCategory);
                     }
                 }
                 recyclerView.getAdapter().notifyDataSetChanged();

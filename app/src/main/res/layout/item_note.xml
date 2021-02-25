@@ -48,35 +48,33 @@
             android:maxLines="3"
             android:textColor="@color/text_color_dark"
             android:textSize="@dimen/txt_h3"
-            app:layout_constraintBottom_toTopOf="@+id/category"
+            app:layout_constraintBottom_toTopOf="@+id/date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
-
-        <TextView
-            android:id="@+id/category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Last modified date"
-            android:textColor="@color/text_color_dark_50"
-            android:textSize="@dimen/txt_h4"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/description" />
 
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last modified date"
+            android:text="date"
+            android:textColor="@color/text_color_dark_50"
+            android:textSize="@dimen/txt_h4"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/category"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description" />
+
+        <TextView
+            android:id="@+id/category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category"
             android:textColor="@color/text_color_dark_50"
             android:textSize="@dimen/txt_h4"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/category" />
+            app:layout_constraintTop_toBottomOf="@+id/date" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

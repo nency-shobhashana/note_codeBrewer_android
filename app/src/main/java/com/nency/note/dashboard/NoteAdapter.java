@@ -15,15 +15,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.nency.note.interfaces.OnItemClickListener;
 import com.nency.note.R;
 import com.nency.note.room.Note;
+import com.nency.note.room.NoteWithCategory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
-    private List<Note> notes = null;
+    private List<NoteWithCategory> notes = null;
     private OnItemClickListener onItemClickListener;
 
-    public NoteAdapter (Context context, List<Note> list,@NonNull OnItemClickListener onItemClickListener) {
+    public NoteAdapter (Context context, List<NoteWithCategory> list,@NonNull OnItemClickListener onItemClickListener) {
         notes = list;
         this.onItemClickListener = onItemClickListener;
     }
@@ -38,14 +42,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         public NoteViewHolder(@NonNull View itemView, final OnItemClickListener onItemClickListener) {
             super(itemView);
             // set click listener for whole view holder
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick(id);
-                }
-            });
+            itemView.setOnClickListener(v -> onItemClickListener.onItemClick(id));
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
+            category = itemView.findViewById(R.id.category);
             date = itemView.findViewById(R.id.date);
             image = itemView.findViewById(R.id.image);
         }
@@ -60,12 +60,29 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-        Note note = notes.get(position);
+        Note note = notes.get(position).note;
         holder.id = note.getId();
         holder.itemView.setTag(note);
         holder.title.setText(note.getTitle());
         holder.description.setText(note.getDescription());
+        holder.category.setText(notes.get(position).category.getName());
+        displayDate(holder, note);
         displayImageIfIsThere(holder, note);
+    }
+
+    private void displayDate(@NonNull NoteViewHolder holder,
+            Note note) {
+        try {
+            SimpleDateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CANADA);
+            SimpleDateFormat displayFormat = new SimpleDateFormat("MMM dd, yyyy",
+                    Locale.CANADA);
+            holder.date.setText(displayFormat.format(parseFormat.parse(note.getDate())));
+            holder.date.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            holder.date.setVisibility(View.GONE);
+        }
+
     }
 
     private void displayImageIfIsThere(@NonNull NoteViewHolder holder, Note note) {

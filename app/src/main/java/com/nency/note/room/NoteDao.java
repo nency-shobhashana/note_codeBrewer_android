@@ -27,7 +27,7 @@ public interface NoteDao {
     @Query("SELECT * FROM note WHERE categoryId NOT in (:categoriesId) ORDER BY " +
             "CASE :sortByDate WHEN 'false' THEN title " +
             " WHEN 'true' THEN date END")
-    List<Note> getAllFilterNotes(List<Integer> categoriesId, String sortByDate);
+    List<NoteWithCategory> getAllFilterNotes(List<Integer> categoriesId, String sortByDate);
 
     @Query("SELECT * FROM note where id == :id")
     NoteWithCategory getNote(int id);
