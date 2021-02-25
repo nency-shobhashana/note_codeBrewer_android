@@ -3,18 +3,6 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.nency.note.dashboard.MainActivity">
     <item
-        android:id="@+id/appSearchBar"
-        android:icon="@drawable/ic_search"
-        android:title="Search"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom|withText" />
-
-    <item
-        android:id="@+id/appFilter"
-        android:icon="@drawable/ic_filter"
-        android:title="Filter"
-        app:showAsAction="ifRoom|withText" />
-    <item
         android:id="@+id/appMap"
         android:icon="@drawable/ic_location"
         android:title="Notes on Map"

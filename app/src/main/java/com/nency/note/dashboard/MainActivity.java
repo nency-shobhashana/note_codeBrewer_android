@@ -1,37 +1,25 @@
 package com.nency.note.dashboard;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.nency.note.detail.CategoryListDialogFragment;
-import com.nency.note.interfaces.OnCategoryActionListener;
-import com.nency.note.interfaces.OnCategorySelectListener;
-import com.nency.note.interfaces.OnItemClickListener;
-import com.nency.note.R;
-import com.nency.note.detail.NoteActivity;
-import com.nency.note.map.MapsActivity;
-import com.nency.note.room.Category;
-import com.nency.note.room.Note;
-import com.nency.note.room.NoteRoomDatabase;
-import com.nency.note.room.NoteWithCategory;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.EditText;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nency.note.R;
+import com.nency.note.detail.NoteActivity;
+import com.nency.note.interfaces.OnCategorySelectListener;
+import com.nency.note.interfaces.OnItemClickListener;
+import com.nency.note.map.MapsActivity;
+import com.nency.note.room.Category;
+import com.nency.note.room.NoteRoomDatabase;
+import com.nency.note.room.NoteWithCategory;
 
 import java.util.ArrayList;
 
@@ -60,6 +48,12 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         // init recycle view
         initRecyclerView();
 
+        // init filter
+        initFilter();
+
+        // init search view
+        initSearchView();
+
         // add new note button
         FloatingActionButton addNew = findViewById(R.id.addNew);
         addNew.setOnClickListener(view -> {
@@ -81,7 +75,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         recyclerView = findViewById(R.id.list);
         recyclerView.setHasFixedSize(true);
         // set grid layout
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(NUM_COLUMNS, LinearLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager staggeredGridLayoutManager =
+                new StaggeredGridLayoutManager(NUM_COLUMNS, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         //set spacing between grid
         recyclerView.addItemDecoration(new NoteAdapter.GridSpacingItemDecoration(2,
@@ -91,24 +86,32 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         recyclerView.setAdapter(myAdapter);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem mSearch = menu.findItem(R.id.appSearchBar);
-        SearchView mSearchView = (SearchView) mSearch.getActionView();
+    private void initFilter() {
+        findViewById(R.id.appFilter).setOnClickListener(v -> CategoryFilterListDialogFragment.newInstance(
+                filterCategory,
+                this)
+                .show(getSupportFragmentManager(), "dialog"));
+    }
+
+    private void initSearchView() {
+        SearchView mSearchView = (SearchView) findViewById(R.id.appSearchBar);
         mSearchView.setQueryHint("Search");
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 filterNotes.clear();
                 for (NoteWithCategory noteWithCategory : notes) {
-                    if(noteWithCategory.note.getTitle().toLowerCase().contains(newText.toLowerCase())
-                    || noteWithCategory.note.getDescription().toLowerCase().contains(newText.toLowerCase())){
+                    if (noteWithCategory.note.getTitle()
+                            .toLowerCase()
+                            .contains(newText.toLowerCase())
+                            || noteWithCategory.note.getDescription()
+                            .toLowerCase()
+                            .contains(newText.toLowerCase())) {
                         filterNotes.add(noteWithCategory);
                     }
                 }
@@ -116,23 +119,18 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                 return true;
             }
         });
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.appFilter){
-            CategoryFilterListDialogFragment.newInstance(filterCategory, this)
-                    .show(getSupportFragmentManager(), "dialog");
-            return true;
-        } else if(item.getItemId() == R.id.appMap){
+        if (item.getItemId() == R.id.appMap) {
             startActivity(new Intent(this, MapsActivity.class));
             return true;
-        } else if(item.getItemId() == R.id.sortByTitle){
+        } else if (item.getItemId() == R.id.sortByTitle) {
             sortByDate = false;
             loadNotes();
             return true;
-        } else if(item.getItemId() == R.id.sortByDate){
+        } else if (item.getItemId() == R.id.sortByDate) {
             sortByDate = true;
             loadNotes();
             return true;
@@ -159,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     @Override
     public void onCategorySelected(Category category) {
-        if(filterCategory.contains(category)){
+        if (filterCategory.contains(category)) {
             filterCategory.remove(category);
             filterCategoriesId.remove(Integer.valueOf(category.getId()));
         } else {

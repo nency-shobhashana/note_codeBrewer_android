@@ -25,7 +25,18 @@
                 android:textColor="@color/text_color_white"
                 android:textSize="@dimen/txt_h1" />
 
+            <ImageView
+                android:id="@+id/appFilter"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="64dp"
+                android:background="@drawable/button_bg"
+                android:padding="8dp"
+                android:src="@drawable/ic_filter" />
+
             <androidx.appcompat.widget.SearchView
+                android:id="@+id/appSearchBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
