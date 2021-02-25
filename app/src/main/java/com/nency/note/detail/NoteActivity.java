@@ -156,7 +156,10 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
         });
 
         if (locationHandler.hasLocationPermission(this)) {
-            updateLocation(locationHandler.startUpdateLocation(this));
+            Location loc = locationHandler.startUpdateLocation(this);
+            if(loc != null) {
+                updateLocation(loc);
+            }
         } else {
             locationHandler.requestLocationPermission(this, LOCATION_REQUEST);
         }
@@ -168,7 +171,10 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
             @NonNull int[] grantResults) {
         if (LOCATION_REQUEST == requestCode) {
             if (locationHandler.hasLocationPermission(this)) {
-                updateLocation(locationHandler.startUpdateLocation(this));
+                Location loc = locationHandler.startUpdateLocation(this);
+                if(loc != null) {
+                    updateLocation(loc);
+                }
             }
         }
     }

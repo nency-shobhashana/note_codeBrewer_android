@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimary">#202020</color>
+    <color name="colorPrimaryDark">#050505</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="black">#000000</color>
+
+    <color name="button_bg">#303030</color>
+    <color name="text_color_white">#FFFFFF</color>
+    <color name="text_color_dark">#202020</color>
+    <color name="text_color_dark_50">#80202020</color>
+
+    <color name="orange">#FFAB91</color>
+    <color name="yellow">#FDCC80</color>
+    <color name="green">#E6EE9B</color>
+    <color name="violate">#CF93D9</color>
+    <color name="blue">#80DEEA</color>
+    <color name="pink">#F48FB1</color>
 </resources>

@@ -56,30 +56,14 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.list);
-        recyclerView.setHasFixedSize(true);
-
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-//        Database.initDatabase();
-//        notes = Database.getNotes();
-
-        // set adapter
-        myAdapter = new NoteAdapter(this, filterNotes, this);
+        // init recycle view
         initRecyclerView();
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         // add new note button
         FloatingActionButton addNew = findViewById(R.id.addNew);
-        addNew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), NoteActivity.class);
-                startActivity(i);
-            }
+        addNew.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), NoteActivity.class);
+            startActivity(i);
         });
 
         // Room db
@@ -93,9 +77,16 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     }
 
     private void initRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.list);
+        recyclerView = findViewById(R.id.list);
+        recyclerView.setHasFixedSize(true);
+        // set grid layout
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(NUM_COLUMNS, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        //set spacing between grid
+        recyclerView.addItemDecoration(new NoteAdapter.GridSpacingItemDecoration(2,
+                getResources().getDimensionPixelOffset(R.dimen.list_item_spacing), true));
+        // set adapter
+        myAdapter = new NoteAdapter(this, filterNotes, this);
         recyclerView.setAdapter(myAdapter);
     }
 
