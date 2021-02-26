@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,12 +21,14 @@ import com.nency.note.room.Converter;
 import com.nency.note.room.Note;
 import com.nency.note.room.NoteRoomDatabase;
 import com.nency.note.room.NoteWithCategory;
+import com.nency.note.utils.ColorUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class NoteActivity extends AppCompatActivity implements OnCategorySelectListener {
 
@@ -50,7 +51,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
 
     private Category category;
 
-    private int color=0;
+    private int color = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,8 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
         setContentView(R.layout.activity_note);
 
         noteId = getIntent().getIntExtra("NoteId", -1);
-        color = getIntent().getIntExtra("Color", -1);
+        color = getIntent().getIntExtra("Color", ColorUtils.getColor(this,
+                new Random().nextInt(6)));
         // Room db
         noteRoomDatabase = noteRoomDatabase.getInstance(this);
 
@@ -91,12 +93,12 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
             initLocation();
             createOrSetUnCategorised();
         }
-        txtCategory.setText("Category : " +category.getName());
+        txtCategory.setText("Category : " + category.getName());
     }
 
     private void createOrSetUnCategorised() {
         category = noteRoomDatabase.CategoryDao().getUnCategorised();
-        if(category == null) {
+        if (category == null) {
             category = new Category("UnCategorised", 0);
             noteRoomDatabase.CategoryDao().insertCategory(category);
             category = noteRoomDatabase.CategoryDao().getUnCategorised();
@@ -167,7 +169,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
 
         if (locationHandler.hasLocationPermission(this)) {
             Location loc = locationHandler.startUpdateLocation(this);
-            if(loc != null) {
+            if (loc != null) {
                 updateLocation(loc);
             }
         } else {
@@ -182,7 +184,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
         if (LOCATION_REQUEST == requestCode) {
             if (locationHandler.hasLocationPermission(this)) {
                 Location loc = locationHandler.startUpdateLocation(this);
-                if(loc != null) {
+                if (loc != null) {
                     updateLocation(loc);
                 }
             }
@@ -200,7 +202,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
     @Override
     public void onCategorySelected(Category category) {
         this.category = category;
-        txtCategory.setText("Category : " +category.getName());
+        txtCategory.setText("Category : " + category.getName());
     }
 
     private void updateNote() {
