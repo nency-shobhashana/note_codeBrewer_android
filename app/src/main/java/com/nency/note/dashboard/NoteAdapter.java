@@ -46,7 +46,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
                 final OnItemClickListener onItemClickListener) {
             super(itemView);
             // set click listener for whole view holder
-            itemView.setOnClickListener(v -> onItemClickListener.onItemClick(id));
             container = itemView.findViewById(R.id.container);
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
@@ -74,15 +73,23 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         holder.category.setText(notes.get(position).category.getName());
         displayDate(holder, note);
         displayImageIfIsThere(holder, note);
-        setBackground(holder, position);
+        int color = setBackground(holder, position);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onItemClick(note.getId(),color);
+            }
+        });
     }
 
     // set background color
-    private void setBackground(@NonNull NoteViewHolder holder,
+    private int setBackground(@NonNull NoteViewHolder holder,
             int position) {
-        holder.container.setBackgroundColor(ColorUtils.getColor(holder.itemView.getContext(),
-                position % 6));
-
+        int color=ColorUtils.getColor(holder.itemView.getContext(),
+                position % 6);
+        holder.container.setBackgroundColor(color);
+        return color;
     }
 
     // parse date from String to Date class then format to display format string

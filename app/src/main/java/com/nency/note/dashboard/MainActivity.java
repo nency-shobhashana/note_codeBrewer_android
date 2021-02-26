@@ -149,9 +149,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     }
 
     @Override
-    public void onItemClick(int id) {
+    public void onItemClick(int id, int color) {
         Intent i = new Intent(this, NoteActivity.class);
         i.putExtra("NoteId", id);
+        i.putExtra("Color", color);
         startActivity(i);
     }
 

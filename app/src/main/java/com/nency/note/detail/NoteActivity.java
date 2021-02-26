@@ -38,7 +38,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
     EditText title, description;
     TextView txtCategory, date, location;
     ImageView iconCategory, iconImage, iconAudio;
-    Button saveNote;
+    Button saveNote, backBtn;
 
     ArrayList<Uri> imageList = new ArrayList<>();
     ArrayList<String> recordsList = new ArrayList<>();
@@ -51,12 +51,15 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
 
     private Category category;
 
+    private int color=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
 
         noteId = getIntent().getIntExtra("NoteId", -1);
+        color = getIntent().getIntExtra("Color", -1);
         // Room db
         noteRoomDatabase = noteRoomDatabase.getInstance(this);
 
@@ -111,6 +114,11 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
         iconImage = findViewById(R.id.iconImage);
         iconAudio = findViewById(R.id.iconAudio);
         saveNote = findViewById(R.id.saveNote);
+        backBtn = findViewById(R.id.backBtn);
+
+        View detail_layout = findViewById(R.id.detail_layout);
+        detail_layout.setBackgroundColor(color);
+
     }
 
     private void initListener() {
@@ -144,6 +152,9 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
                     updateNote();
                 }
             }
+        });
+        backBtn.setOnClickListener(v -> {
+            finish();
         });
     }
 
