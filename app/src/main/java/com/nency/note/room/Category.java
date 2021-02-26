@@ -3,6 +3,7 @@ package com.nency.note.room;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
@@ -17,13 +18,8 @@ public class Category {
     @ColumnInfo(name = "name")
     private String name;
 
-    @NonNull
-    @ColumnInfo(name = "noOfNotes")
-    private int noOfNotes;
-
-    public Category( @NonNull String name, @NonNull int noOfNotes) {
+    public Category( @NonNull String name) {
         this.name = name;
-        this.noOfNotes = noOfNotes;
     }
 
     public int getId() {
@@ -41,15 +37,6 @@ public class Category {
 
     public void setName(@NonNull String name) {
         this.name = name;
-    }
-
-    @NonNull
-    public int getNoOfNotes() {
-        return noOfNotes;
-    }
-
-    public void setNoOfNotes(int noOfNotes) {
-        this.noOfNotes = noOfNotes;
     }
 
     @Override

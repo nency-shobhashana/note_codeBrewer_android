@@ -20,6 +20,7 @@ import com.nency.note.R;
 import com.nency.note.interfaces.OnCategoryActionListener;
 import com.nency.note.interfaces.OnCategorySelectListener;
 import com.nency.note.room.Category;
+import com.nency.note.room.CategoryWithNoteCount;
 import com.nency.note.room.NoteRoomDatabase;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
     private OnCategorySelectListener onCategorySelectListener;
     private NoteRoomDatabase noteRoomDatabase;
 
-    private final ArrayList<Category> categories = new ArrayList<>();
+    private final ArrayList<CategoryWithNoteCount> categories = new ArrayList<>();
     ArrayList<Category> filterCategory;
     private RecyclerView recyclerView ;
 
@@ -141,7 +142,7 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
     }
 
     private void addCategory(String category){
-        noteRoomDatabase.CategoryDao().insertCategory(new Category(category, 0));
+        noteRoomDatabase.CategoryDao().insertCategory(new Category(category));
         loadCategory();
     }
 
@@ -166,11 +167,11 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
 
     private class CategoryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-        private final List<Category> categories;
+        private final List<CategoryWithNoteCount> categories;
         private final OnCategoryActionListener onCategoryActionListener;
         private final ArrayList<Category> filterCategory;
 
-        CategoryAdapter(List<Category> categories,
+        CategoryAdapter(List<CategoryWithNoteCount> categories,
                 ArrayList<Category> filterCategory,
                 OnCategoryActionListener onCategoryActionListener) {
             this.categories = categories;
@@ -187,7 +188,7 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            Category category = categories.get(position);
+            CategoryWithNoteCount category = categories.get(position);
             holder.category = category;
             holder.text.setText(String.format("%s (%d)",
                     category.getName(),

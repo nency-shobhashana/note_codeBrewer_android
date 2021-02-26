@@ -93,7 +93,7 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment {
     }
 
     private void addCategory(String category){
-        noteRoomDatabase.CategoryDao().insertCategory(new Category(category, 0));
+        noteRoomDatabase.CategoryDao().insertCategory(new Category(category));
         loadCategory();
     }
 

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
@@ -33,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     RecyclerView recyclerView;
     RecyclerView.Adapter myAdapter;
-    RecyclerView.LayoutManager layoutManager;
     private boolean sortByDate = false;
 
     ArrayList<NoteWithCategory> notes = new ArrayList();

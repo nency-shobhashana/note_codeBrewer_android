@@ -99,7 +99,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
     private void createOrSetUnCategorised() {
         category = noteRoomDatabase.CategoryDao().getUnCategorised();
         if (category == null) {
-            category = new Category("UnCategorised", 0);
+            category = new Category("UnCategorised");
             noteRoomDatabase.CategoryDao().insertCategory(category);
             category = noteRoomDatabase.CategoryDao().getUnCategorised();
         }
