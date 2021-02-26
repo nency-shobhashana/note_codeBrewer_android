@@ -37,8 +37,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
 
     EditText title, description;
     TextView txtCategory, date, location;
-    ImageView iconCategory, iconImage, iconAudio;
-    Button saveNote, backBtn;
+    ImageView iconCategory, iconImage, iconAudio, saveNote, backBtn;
 
     ArrayList<Uri> imageList = new ArrayList<>();
     ArrayList<String> recordsList = new ArrayList<>();

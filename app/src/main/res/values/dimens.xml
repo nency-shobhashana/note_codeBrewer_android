@@ -8,4 +8,6 @@
     <dimen name="txt_h2">24sp</dimen>
     <dimen name="txt_h3">16sp</dimen>
     <dimen name="txt_h4">12sp</dimen>
+
+    <dimen name="txt_b1">20sp</dimen>
 </resources>

@@ -1,120 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/detail_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#000000"
-    tools:context=".detail.NoteActivity">
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:id="@+id/detail_layout"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   android:background="@color/colorPrimary"
+                                                   tools:context=".detail.NoteActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <FrameLayout
+        android:id="@+id/appBarContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:padding="16dp"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="8dp"
+        android:padding="16dp">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/button_bg"
+            android:padding="8dp"
+            android:src="@drawable/ic_back" />
 
-            <Button
-                android:id="@+id/backBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="start|center_vertical"
-                android:background="@drawable/ic_back"
-                android:padding="2dp"
-                android:src="@drawable/ic_back" />
+        <ImageView
+            android:id="@+id/saveNote"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical|end"
+            android:background="@drawable/button_bg"
+            android:padding="8dp"
+            android:src="@drawable/ic_check" />
 
-            <Button
-                android:id="@+id/saveNote"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical|end"
-                android:background="@drawable/ic_check"
-                android:src="@drawable/ic_check" />
-        </FrameLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+    </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="80dp"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/location"
+        app:layout_constraintTop_toBottomOf="@+id/appBarContainer">
 
-
-        <EditText
-            android:id="@+id/title"
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint="Title"
-            android:inputType="textPersonName"
-            android:textColor="@color/text_color_white"
-            android:textColorHint="@color/text_color_white"
-            android:textSize="@dimen/txt_h1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="16 Feb, 2021"
-            android:textAlignment="textEnd"
-            android:textColor="@color/text_color_white"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/category"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="Category"
-            android:textAlignment="textEnd"
-            android:textColor="@color/text_color_white"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <EditText
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:ems="10"
-            android:gravity="start|top"
-            android:hint="Type Something ..."
-            android:inputType="textMultiLine"
-            android:textColor="@color/text_color_white"
-            android:textColorHint="@color/text_color_white"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/date" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintTop_toTopOf="parent">
 
 
-    </LinearLayout>
+            <EditText
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent"
+                android:ems="10"
+                android:hint="Title"
+                android:inputType="textPersonName"
+                android:textColor="@color/text_color_white"
+                android:textColorHint="@color/text_color_white"
+                android:textSize="@dimen/txt_h1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="16 Feb, 2021"
+                android:textAlignment="textEnd"
+                android:textColor="@color/text_color_dark_50"
+                android:textSize="@dimen/txt_h4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Category"
+                android:textAlignment="textEnd"
+                android:textColor="@color/text_color_dark_50"
+                android:textSize="@dimen/txt_h4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="Type Something ..."
+                android:inputType="textMultiLine"
+                android:minHeight="300dp"
+                android:textColor="@color/text_color_white"
+                android:textColorHint="@color/text_color_white"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/date" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <TextView
         android:id="@+id/location"
@@ -124,48 +126,50 @@
         android:layout_marginEnd="16dp"
         android:text="Location"
         android:textAlignment="textEnd"
-        android:textColor="@color/text_color_white"
-        android:textSize="18sp"
+        android:textColor="@color/text_color_dark_50"
+        android:textSize="@dimen/txt_h4"
         app:layout_constraintBottom_toTopOf="@id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:elevation="8dp"
         android:orientation="horizontal"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
-
 
         <ImageView
             android:id="@+id/iconCategory"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start"
+            android:background="@drawable/button_bg"
+            android:padding="8dp"
             app:srcCompat="@drawable/ic_category" />
 
         <ImageView
             android:id="@+id/iconImage"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
-            android:layout_weight="1"
+            android:background="@drawable/button_bg"
+            android:padding="8dp"
             app:srcCompat="@drawable/ic_image" />
 
         <ImageView
             android:id="@+id/iconAudio"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            app:srcCompat="@android:drawable/presence_audio_online" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:background="@drawable/button_bg"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_mic" />
 
 
-    </LinearLayout>
+    </FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
