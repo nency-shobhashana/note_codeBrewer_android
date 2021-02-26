@@ -3,17 +3,35 @@
                                                    xmlns:tools="http://schemas.android.com/tools"
                                                    android:layout_width="match_parent"
                                                    android:layout_height="wrap_content"
+                                                   android:background="@color/colorPrimary"
+                                                   android:paddingTop="16dp"
                                                    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/addNewCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New Category"
+        android:textColor="@color/text_color_white"
+        android:background="@drawable/button_bg"
+        android:textSize="@dimen/txt_h2"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listCategory"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:clipToPadding="false"
-        android:paddingTop="@dimen/list_item_spacing_half"
         android:paddingBottom="@dimen/list_item_spacing_half"
+        android:layout_marginTop="16dp"
         tools:context=".detail.CategoryListDialogFragment"
         tools:listitem="@layout/category_list_dialog_item"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/addNewCategory"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

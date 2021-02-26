@@ -4,9 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +30,7 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
     private OnCategorySelectListener onCategorySelectListener;
     private NoteRoomDatabase noteRoomDatabase;
 
-    private ArrayList<Category> categories = new ArrayList<>();
+    private final ArrayList<Category> categories = new ArrayList<>();
     ArrayList<Category> filterCategory;
     private RecyclerView recyclerView ;
 
@@ -87,7 +88,7 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
         final View dialogView = inflater.inflate(R.layout.add_new_category_dialog, null);
         dialogBuilder.setView(dialogView);
 
-        final EditText edt = (EditText) dialogView.findViewById(R.id.edit1);
+        final EditText edt = dialogView.findViewById(R.id.edit1);
         edt.setText(category.getName());
 
         dialogBuilder.setTitle("Edit Category");
@@ -102,9 +103,30 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
         loadCategory();
     }
 
+    private void showAddNewCategoryAlert() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.add_new_category_dialog, null);
+        dialogBuilder.setView(dialogView);
+
+        final EditText edt = dialogView.findViewById(R.id.edit1);
+
+        dialogBuilder.setTitle("Add New Category");
+        dialogBuilder.setPositiveButton("Add",
+                (dialog, whichButton) -> addCategory(edt.getText().toString()));
+        dialogBuilder.setNegativeButton("Cancel", (dialog, whichButton) -> {});
+        dialogBuilder.create().show();
+    }
+
+    private void addCategory(String category){
+        noteRoomDatabase.CategoryDao().insertCategory(new Category(category, 0));
+        loadCategory();
+    }
+
     private class ViewHolder extends RecyclerView.ViewHolder {
 
-        final CheckedTextView text;
+        final TextView text;
+        final ImageView btnChecked;
         Category category;
 
         ViewHolder(LayoutInflater inflater,
@@ -116,6 +138,7 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
             itemView.findViewById(R.id.btnEdit).setOnClickListener(v -> onCategoryActionListener.onCategoryEditSelected(category));
             itemView.findViewById(R.id.btnRemove).setOnClickListener(v -> onCategoryActionListener.onCategoryRemoveSelected(category));
             text = itemView.findViewById(R.id.categoryTitle);
+            btnChecked = itemView.findViewById(R.id.btnChecked);
         }
     }
 
@@ -148,11 +171,7 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
                     category.getName(),
                     category.getNoOfNotes()));
 
-            if(!filterCategory.contains(category)){
-                holder.text.setCheckMarkDrawable(R.drawable.ic_check);
-            } else {
-                holder.text.setCheckMarkDrawable(null);
-            }
+            holder.btnChecked.setSelected(!filterCategory.contains(category));
         }
 
         @Override
