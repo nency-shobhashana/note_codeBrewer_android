@@ -3,11 +3,15 @@ package com.nency.note.room;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.util.List;
 
-@Entity(tableName = "note")
+import static androidx.room.ForeignKey.RESTRICT;
+
+@Entity(tableName = "note", foreignKeys = @ForeignKey(entity = Category.class, parentColumns = {
+        "id"}, childColumns = {"categoryId"}, onDelete = RESTRICT))
 public class Note {
 
 

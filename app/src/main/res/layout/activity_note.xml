@@ -32,7 +32,8 @@
             android:layout_gravity="center_vertical|end"
             android:background="@drawable/button_bg"
             android:padding="8dp"
-            android:src="@drawable/button_check" />
+            android:src="@drawable/button_check"
+            app:tint="@color/text_color_white" />
 
     </FrameLayout>
 

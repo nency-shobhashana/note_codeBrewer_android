@@ -89,8 +89,16 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
         dialogBuilder.setMessage("Are you sure you want to remove category, " + category.getName() +"?");
         dialogBuilder.setPositiveButton("Remove",
                 (dialog, whichButton) -> {
-                    noteRoomDatabase.CategoryDao().deleteCategory(category.getId());
-                    loadCategory();
+                    try {
+                        noteRoomDatabase.CategoryDao().deleteCategory(category.getId());
+                        loadCategory();
+                    }catch (Exception e){
+                        AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+                        alert.setTitle("Error");
+                        alert.setMessage("Category contains notes, Please move notes to " +
+                                "other category or remove those.");
+                        alert.show();
+                    }
                 });
         dialogBuilder.setNegativeButton("Cancel", (dialog, whichButton) -> {});
         dialogBuilder.create().show();
