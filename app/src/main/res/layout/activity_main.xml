@@ -25,12 +25,14 @@
                 android:textColor="@color/text_color_white"
                 android:textSize="@dimen/txt_h1" />
 
+
+
             <ImageView
                 android:id="@+id/appFilter"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical|end"
-                android:layout_marginEnd="64dp"
+                android:layout_marginEnd="128dp"
                 android:background="@drawable/button_bg"
                 android:padding="8dp"
                 android:src="@drawable/ic_filter" />
@@ -41,7 +43,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
                 android:background="@drawable/button_bg"
+                android:layout_marginEnd="64dp"
                 app:iconifiedByDefault="true" />
+
+            <ImageView
+                android:id="@+id/appMore"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical|end"
+                android:background="@drawable/button_bg"
+                android:padding="8dp"
+                android:src="@drawable/ic_more" />
         </FrameLayout>
 
         <!--        <androidx.appcompat.widget.Toolbar-->

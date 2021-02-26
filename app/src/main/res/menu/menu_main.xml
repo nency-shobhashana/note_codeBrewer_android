@@ -1,20 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.nency.note.dashboard.MainActivity">
     <item
         android:id="@+id/appMap"
         android:icon="@drawable/ic_location"
-        android:title="Notes on Map"
-        app:showAsAction="ifRoom|withText" />
+        android:title="Notes on Map" />
     <item android:title="Sort By">
-        <menu >
+        <menu>
             <item
                 android:id="@+id/sortByTitle"
                 android:title="Title" />
             <item
                 android:id="@+id/sortByDate"
-                android:title="Date"/>
+                android:title="Date" />
         </menu>
     </item>
 </menu>

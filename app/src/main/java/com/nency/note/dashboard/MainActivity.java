@@ -2,10 +2,12 @@ package com.nency.note.dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,7 +26,7 @@ import com.nency.note.room.NoteWithCategory;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnItemClickListener,
-        OnCategorySelectListener {
+        OnCategorySelectListener, PopupMenu.OnMenuItemClickListener {
 
 
     private static final int NUM_COLUMNS = 2;
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         // init search view
         initSearchView();
+
+        //init more menu;
+        initMoreMenu();
 
         // add new note button
         FloatingActionButton addNew = findViewById(R.id.addNew);
@@ -121,8 +126,18 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         });
     }
 
+    private void initMoreMenu() {
+        findViewById(R.id.appMore).setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(this, v);
+            MenuInflater inflater = popup.getMenuInflater();
+            popup.setOnMenuItemClickListener(this);
+            inflater.inflate(R.menu.menu_main, popup.getMenu());
+            popup.show();
+        });
+    }
+
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.appMap) {
             startActivity(new Intent(this, MapsActivity.class));
             return true;
@@ -134,9 +149,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             sortByDate = true;
             loadNotes();
             return true;
-        } else {
-            return super.onOptionsItemSelected(item);
         }
+        return false;
     }
 
     public void loadNotes() {
