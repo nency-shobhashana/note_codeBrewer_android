@@ -79,8 +79,21 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
 
     @Override
     public void onCategoryRemoveSelected(Category category) {
-        noteRoomDatabase.CategoryDao().deleteCategory(category.getId());
-        loadCategory();
+        showRemoveCategoryAlert(category);
+    }
+
+    // show alert before remove category
+    private void showRemoveCategoryAlert(Category category) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
+        dialogBuilder.setTitle("Remove Category");
+        dialogBuilder.setMessage("Are you sure you want to remove category, " + category.getName() +"?");
+        dialogBuilder.setPositiveButton("Remove",
+                (dialog, whichButton) -> {
+                    noteRoomDatabase.CategoryDao().deleteCategory(category.getId());
+                    loadCategory();
+                });
+        dialogBuilder.setNegativeButton("Cancel", (dialog, whichButton) -> {});
+        dialogBuilder.create().show();
     }
 
     private void showUpdateCategoryAlert(Category category) {
