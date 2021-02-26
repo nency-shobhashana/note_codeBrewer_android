@@ -126,7 +126,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
         iconCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CategoryListDialogFragment.newInstance(NoteActivity.this)
+                CategoryListDialogFragment.newInstance(category.getId(), NoteActivity.this)
                         .show(getSupportFragmentManager(), "dialog");
             }
         });

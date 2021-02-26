@@ -57,6 +57,7 @@ public class CategoryFilterListDialogFragment extends BottomSheetDialogFragment 
         noteRoomDatabase = NoteRoomDatabase.getInstance(requireContext());
 
         loadCategory();
+        view.findViewById(R.id.addNewCategory).setOnClickListener(v -> showAddNewCategoryAlert());
     }
 
     private void loadCategory(){

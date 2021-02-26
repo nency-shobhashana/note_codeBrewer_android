@@ -10,4 +10,5 @@
     <dimen name="txt_h4">12sp</dimen>
 
     <dimen name="txt_b1">20sp</dimen>
+    <dimen name="txt_b2">18sp</dimen>
 </resources>

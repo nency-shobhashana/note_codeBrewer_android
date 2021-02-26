@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nency.note.R;
@@ -31,16 +32,19 @@ import java.util.List;
 public class CategoryListDialogFragment extends BottomSheetDialogFragment {
 
     private OnCategorySelectListener onCategorySelectListener;
+    private int selectedId;
     private NoteRoomDatabase noteRoomDatabase;
 
     private ArrayList<Category> categories = new ArrayList<>();
 
     private RecyclerView recyclerView ;
-    private Button btnAddCategory;
+    private TextView btnAddCategory;
 
-    public static CategoryListDialogFragment newInstance(@NonNull OnCategorySelectListener onCategorySelectListener) {
+    public static CategoryListDialogFragment newInstance(int selectedId,
+            @NonNull OnCategorySelectListener onCategorySelectListener) {
         final CategoryListDialogFragment fragment = new CategoryListDialogFragment();
         fragment.onCategorySelectListener = onCategorySelectListener;
+        fragment.selectedId = selectedId;
         return fragment;
     }
 
@@ -56,18 +60,14 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment {
         btnAddCategory = view.findViewById(R.id.btnAddCategory);
         recyclerView = view.findViewById(R.id.listCategory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new CategoryAdapter(categories, onCategorySelectListener));
+        recyclerView.setAdapter(new CategoryAdapter(categories, selectedId,
+                onCategorySelectListener));
         loadCategory();
         loadListener();
     }
 
     private void loadListener() {
-        btnAddCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddNewCategoryAlert();
-            }
-        });
+        btnAddCategory.setOnClickListener(v -> showAddNewCategoryAlert());
     }
 
     private void showAddNewCategoryAlert() {
@@ -107,6 +107,7 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment {
     private class ViewHolder extends RecyclerView.ViewHolder {
 
         final TextView text;
+        final ImageView btnChecked;
         Category category;
 
         ViewHolder(LayoutInflater inflater,
@@ -114,25 +115,26 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment {
                 final OnCategorySelectListener onCategorySelectListener) {
             // TODO: Customize the item layout
             super(inflater.inflate(R.layout.category_list_dialog_item, parent, false));
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onCategorySelectListener.onCategorySelected(category);
-                    dismiss();
-                }
+            itemView.setOnClickListener(v -> {
+                onCategorySelectListener.onCategorySelected(category);
+                dismiss();
             });
-            text = itemView.findViewById(R.id.text);
+            text = itemView.findViewById(R.id.categoryTitle);
+            btnChecked = itemView.findViewById(R.id.btnChecked);
         }
     }
 
     private class CategoryAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         private final List<Category> categories;
+        private final int selectedId;
         private final OnCategorySelectListener onCategorySelectListener;
 
         CategoryAdapter(List<Category> categories,
+                int selectedId,
                 OnCategorySelectListener onCategorySelectListener) {
             this.categories = categories;
+            this.selectedId = selectedId;
             this.onCategorySelectListener = onCategorySelectListener;
         }
 
@@ -146,6 +148,8 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment {
         public void onBindViewHolder(ViewHolder holder, int position) {
             holder.category = categories.get(position);
             holder.text.setText(categories.get(position).getName());
+
+            holder.btnChecked.setSelected(categories.get(position).getId() == selectedId);
         }
 
         @Override
