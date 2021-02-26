@@ -219,7 +219,8 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
                         noteTitle,
                         noteDesc,
                         Converter.toString(images),
-                        Converter.toString(recordsList));
+                        Converter.toString(recordsList),
+                        category.getId());
         redirectAllNotes();
     }
 
