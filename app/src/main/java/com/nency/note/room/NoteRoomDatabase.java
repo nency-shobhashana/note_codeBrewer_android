@@ -12,7 +12,7 @@ import androidx.room.TypeConverters;
 @TypeConverters({Converter.class})
 public abstract class NoteRoomDatabase extends RoomDatabase {
 
-    private static final String DB_NAME = "room_employee_database";
+    private static final String DB_NAME = "room_note_database";
 
     public abstract NoteDao NoteDoa();
     public abstract CategoryDao CategoryDao();

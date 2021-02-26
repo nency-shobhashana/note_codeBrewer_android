@@ -23,6 +23,7 @@ public interface CategoryDao {
 //    @Query("SELECT * FROM category ORDER BY name")
 //    List<Category> getAllCategories();
 
+    // left join query to get a number of notes in category
     @Query("SELECT category.*, count(note.categoryId) as noOfNotes " +
             "from category " +
             "left join note " +

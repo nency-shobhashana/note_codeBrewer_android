@@ -22,12 +22,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.nency.note.R;
+import com.nency.note.dashboard.NoteAdapter;
 import com.nency.note.interfaces.OnImageItemClickListener;
 
 import java.io.File;
@@ -67,8 +70,11 @@ public class ImageListDialogFragment extends BottomSheetDialogFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setPeekHeight();
+//        setPeekHeight();
         recyclerView = (RecyclerView) view;
+        //set spacing between grid
+        recyclerView.addItemDecoration(new NoteAdapter.GridSpacingItemDecoration(2,
+                getResources().getDimensionPixelOffset(R.dimen.list_item_spacing), true));
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         recyclerView.setAdapter(new ImageAdapter(imageList, this));
     }

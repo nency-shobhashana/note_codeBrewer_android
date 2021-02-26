@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.nency.note.R;
@@ -38,7 +39,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
 
     EditText title, description;
     TextView txtCategory, date, location;
-    ImageView iconCategory, iconImage, iconAudio, saveNote, backBtn;
+    ImageView iconCategory, iconImage, iconAudio, saveNote, backBtn, deleteNote;
 
     ArrayList<Uri> imageList = new ArrayList<>();
     ArrayList<String> recordsList = new ArrayList<>();
@@ -59,6 +60,8 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
         setContentView(R.layout.activity_note);
 
         noteId = getIntent().getIntExtra("NoteId", -1);
+
+        // set color of background
         color = getIntent().getIntExtra("Color", ColorUtils.getColor(this,
                 new Random().nextInt(6)));
         // Room db
@@ -89,9 +92,11 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
                 }
             }
             recordsList.addAll(note.getRecords());
+            deleteNote.setVisibility(View.VISIBLE);
         } else {
             initLocation();
             createOrSetUnCategorised();
+            deleteNote.setVisibility(View.GONE);
         }
         txtCategory.setText("Category : " + category.getName());
     }
@@ -115,6 +120,7 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
         iconImage = findViewById(R.id.iconImage);
         iconAudio = findViewById(R.id.iconAudio);
         saveNote = findViewById(R.id.saveNote);
+        deleteNote = findViewById(R.id.deleteNote);
         backBtn = findViewById(R.id.backBtn);
 
         View detail_layout = findViewById(R.id.detail_layout);
@@ -123,37 +129,20 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
     }
 
     private void initListener() {
-        iconCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CategoryListDialogFragment.newInstance(category.getId(), NoteActivity.this)
-                        .show(getSupportFragmentManager(), "dialog");
+        iconCategory.setOnClickListener(v -> CategoryListDialogFragment.newInstance(category.getId(), NoteActivity.this)
+                .show(getSupportFragmentManager(), "dialog"));
+        iconImage.setOnClickListener(v -> ImageListDialogFragment.newInstance(imageList)
+                .show(getSupportFragmentManager(), "dialog"));
+        iconAudio.setOnClickListener(v -> AudioRecordFragment.newInstance(recordsList)
+                .show(getSupportFragmentManager(), "dialog"));
+        saveNote.setOnClickListener(v -> {
+            if (noteId < 0) {
+                addNote();
+            } else {
+                updateNote();
             }
         });
-        iconImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImageListDialogFragment.newInstance(imageList)
-                        .show(getSupportFragmentManager(), "dialog");
-            }
-        });
-        iconAudio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AudioRecordFragment.newInstance(recordsList)
-                        .show(getSupportFragmentManager(), "dialog");
-            }
-        });
-        saveNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (noteId < 0) {
-                    addNote();
-                } else {
-                    updateNote();
-                }
-            }
-        });
+        deleteNote.setOnClickListener(v -> showRemoveNoteAlert(noteId));
         backBtn.setOnClickListener(v -> {
             finish();
         });
@@ -209,6 +198,17 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
         String noteTitle = title.getText().toString();
         String noteDesc = description.getText().toString();
 
+        if (noteTitle.isEmpty()) {
+            title.setError("Note title cannot be empty.");
+            title.requestFocus();
+            return;
+        }
+        if (noteDesc.isEmpty()) {
+            description.setError("Note description cannot be empty");
+            description.requestFocus();
+            return;
+        }
+
         ArrayList<String> images = new ArrayList<>();
         for (Uri uri : imageList) {
             images.add(uri.toString());
@@ -253,6 +253,24 @@ public class NoteActivity extends AppCompatActivity implements OnCategorySelectL
         noteRoomDatabase.NoteDoa().insertNote(note);
         Toast.makeText(this, "Note Added", Toast.LENGTH_SHORT).show();
         redirectAllNotes();
+    }
+
+    // show alert before remove category
+    private void showRemoveNoteAlert(int id) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Remove Note");
+        dialogBuilder.setMessage(
+                "Are you sure you want to remove note?");
+        dialogBuilder.setPositiveButton("Remove",
+                (dialog, whichButton) -> {
+                    if (id > -1) {
+                        noteRoomDatabase.NoteDoa().deleteNote(id);
+                    }
+                    finish();
+                });
+        dialogBuilder.setNegativeButton("Cancel", (dialog, whichButton) -> {
+        });
+        dialogBuilder.create().show();
     }
 
     private void redirectAllNotes() {

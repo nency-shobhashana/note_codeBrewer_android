@@ -31,13 +31,13 @@ public class PlayButton extends AppCompatImageView {
     OnClickListener clicker = new OnClickListener() {
         public void onClick(View v) {
             if(onPlayListener != null) {
-                onPlayListener.onPlay(mStartPlaying);
                 if (mStartPlaying) {
                     setImageResource(R.drawable.ic_pause);
                 } else {
                     setImageResource(R.drawable.ic_play);
                 }
                 mStartPlaying = !mStartPlaying;
+                onPlayListener.onPlay(!mStartPlaying);
             }
         }
     };

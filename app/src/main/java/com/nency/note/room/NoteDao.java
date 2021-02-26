@@ -29,6 +29,7 @@ public interface NoteDao {
     @Query("SELECT * FROM note ORDER BY title")
     List<Note> getAllNotes();
 
+    // sorting case by title and date
     @Query("SELECT * FROM note WHERE categoryId NOT in (:categoriesId) ORDER BY " +
             "CASE :sortByDate WHEN 'false' THEN title " +
             " WHEN 'true' THEN date END")

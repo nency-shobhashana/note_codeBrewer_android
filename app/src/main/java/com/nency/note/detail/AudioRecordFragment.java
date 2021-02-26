@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -59,7 +60,7 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
 
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
-    private String[] permissions = {Manifest.permission.RECORD_AUDIO};
+    private final String[] permissions = {Manifest.permission.RECORD_AUDIO};
 
     private AudioRecordFragment() {
     }
@@ -79,7 +80,7 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setPeekHeight();
+//        setPeekHeight();
         recyclerView = view.findViewById(R.id.audioList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new AudioAdapter(audioList, this));
@@ -88,20 +89,10 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
     }
 
     private void setAudioListener() {
-        recordButton = ((RecordButton) getView().findViewById(R.id.btnRecord));
-        recordButton.setOnRecordListener(new RecordButton.OnRecordListener() {
-            @Override
-            public void onRecord(boolean start) {
-                AudioRecordFragment.this.onRecord(start);
-            }
-        });
-        playButton = ((PlayButton) getView().findViewById(R.id.btnPlay));
-        playButton.setOnPlayListener(new PlayButton.OnPlayListener() {
-            @Override
-            public void onPlay(boolean start) {
-                AudioRecordFragment.this.onPlay(start);
-            }
-        });
+        recordButton = requireView().findViewById(R.id.btnRecord);
+        recordButton.setOnRecordListener(AudioRecordFragment.this::onRecord);
+        playButton = requireView().findViewById(R.id.btnPlay);
+        playButton.setOnPlayListener(AudioRecordFragment.this::onPlay);
     }
 
     private void setPeekHeight() {
@@ -116,6 +107,8 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
     @Override
     public void onItemSelect(int position) {
         fileName = audioList.get(position);
+        ((AudioAdapter)recyclerView.getAdapter()).selectedFile = fileName;
+        recyclerView.getAdapter().notifyDataSetChanged();
         playButton.setVisibility(View.VISIBLE);
     }
 
@@ -133,10 +126,8 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
             @NonNull String[] permissions,
             @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                break;
+        if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
+            permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
         }
         if (!permissionToRecordAccepted) {
             dismiss();
@@ -149,7 +140,7 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
                 requireContext(),
                 Manifest.permission.RECORD_AUDIO
         ) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
+            ActivityCompat.requestPermissions(requireActivity(),
                     permissions,
                     REQUEST_RECORD_AUDIO_PERMISSION);
             recordButton.setRecording(false);
@@ -177,7 +168,7 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
             player.prepare();
             player.start();
 
-            AudioManager audioManager = (AudioManager) getContext().getSystemService(AUDIO_SERVICE);
+            AudioManager audioManager = (AudioManager) requireContext().getSystemService(AUDIO_SERVICE);
 
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
             // set audio progress
@@ -209,12 +200,7 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
                     scrubSeekBar.setProgress(player.getCurrentPosition());
                 }
             }, 0, 300);
-            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    AudioRecordFragment.this.stopPlaying();
-                }
-            });
+            player.setOnCompletionListener(mp -> AudioRecordFragment.this.stopPlaying());
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
         }
@@ -230,18 +216,17 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
         }
     }
 
-    private String createAudioFile() throws IOException {
+    private String createAudioFile() {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "Audio_" + timeStamp;
         String storageDir =
                 requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
-        String audio = storageDir + "/" +
-                imageFileName+  /* prefix */
-                ".3gp";         /* suffix */
 
         // Save a file: path for use with ACTION_VIEW intents
-        return audio;
+        return storageDir + "/" +
+                imageFileName+  /* prefix */
+                ".3gp";
     }
 
     private void startRecording() {
@@ -255,6 +240,7 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
             recorder.prepare();
 
             playButton.setVisibility(View.GONE);
+            scrubSeekBar.setVisibility(View.GONE);
             recyclerView.setClickable(false);
         } catch (IOException e) {
             recordButton.setRecording(false);
@@ -292,6 +278,7 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
     private static class AudioViewHolder extends RecyclerView.ViewHolder {
         int position = 0;
         final TextView text;
+        final ImageView btnChecked;
 
         AudioViewHolder(LayoutInflater inflater, ViewGroup parent,
                 final OnAudioItemClickListener onItemClickListener) {
@@ -299,25 +286,16 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
             super(inflater.inflate(R.layout.item_audio,
                     parent,
                     false));
-            text = itemView.findViewById(R.id.txtAudioFileName);
+                text = itemView.findViewById(R.id.txtAudioFileName);
+            btnChecked = itemView.findViewById(R.id.btnChecked);
             itemView.findViewById(R.id.btnRemove)
-                    .setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onItemClickListener.onItemRemove(position);
-                        }
-                    });
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemSelect(position);
-                }
-            });
+                    .setOnClickListener(v -> onItemClickListener.onItemRemove(position));
+            itemView.setOnClickListener(v -> onItemClickListener.onItemSelect(position));
         }
     }
 
     private static class AudioAdapter extends RecyclerView.Adapter<AudioViewHolder> {
-
+        public String selectedFile = "";
         private final ArrayList<String> audioList;
         private final OnAudioItemClickListener onItemClickListener;
 
@@ -338,6 +316,7 @@ public class AudioRecordFragment extends BottomSheetDialogFragment
         public void onBindViewHolder(AudioViewHolder holder, int position) {
             String filePath = audioList.get(position);
             holder.text.setText(filePath.substring(filePath.lastIndexOf("/") + 1));
+            holder.btnChecked.setSelected(filePath.equals(selectedFile));
             holder.position = position;
         }
 
